@@ -14,7 +14,7 @@ body{
 .inner{
 	display: grid;
 	grid-template-columns: 1fr 1fr;
-	grid-template-rows: 200px 200px 200px;
+	grid-template-rows: 230px 230px 230px;
 }
 
 .item{
@@ -27,7 +27,7 @@ body{
 
 .btn{
 	display: inline-block;
-	padding: 10px 20px;
+	padding: 7px;
 	margin: 5px;
 	border: none;
 	background: rgb(91,179,208);
@@ -52,6 +52,16 @@ body{
 	grid-row: 4;
 }
 
+.plus-btn{
+	padding: 10px 15px;
+    border-radius: 50%;
+}
+
+.minus-btn{
+	padding: 10px 15px;
+    border-radius: 50%;
+}
+
 .minus-btn:hover{
 	background: red;
 }
@@ -68,22 +78,23 @@ body{
 
 .btn.add-to-cart-btn {
     grid-row: 3;
+    width: 100%;
 }
 
 .productName{
 	margin-left: 5px;
-	font-size: 15px;
+	font-size: 14px;
 	text-align: left;
 }
 
 .productDescr{
 	margin-left: 5px;
-	font-size: 15px;
+	font-size: 12px;
 	text-align: left;
 }
 
 .productPrice{
 	margin-left: 5px;
-	font-size: 15px;
+	font-size: 14px;
 	text-align: left;
 }

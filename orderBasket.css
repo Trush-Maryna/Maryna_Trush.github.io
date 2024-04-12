@@ -4,11 +4,21 @@ body {
     color: var(--tg-theme-text-color);
     background: var(--tg-theme-bg-color);
     font-family: "SF Pro Text";
+    max-width: 400px;
+}
+
+.light-theme {
+    color: #000;
+}
+
+.dark-theme {
+    color: #fff;
 }
 
 .basket-table {
     margin: 10px;
     font-size: 20px;
+
 }
 
 .nameUser{
@@ -56,7 +66,6 @@ body {
 
 .delete-button:hover {
     background: darkred;
-    width: 40px;
 }
 
 #basket-table {
@@ -84,6 +93,7 @@ body {
 
 .price{
     float: right;
+    text-align: center;
 }
 
 #basket-table td {
@@ -94,7 +104,7 @@ body {
     display: block;
     width: 100%;
     margin: 50px auto;
-    padding: 30px 30px;
+    padding: 20px 20px;
     border: none;
     background: rgb(91,179,208);
     color: #fff;
@@ -103,6 +113,9 @@ body {
     cursor: pointer;
     transition: background .2s linear;
     font-size: 17px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
 }
 
 #pay-button:hover {
