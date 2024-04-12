@@ -18,11 +18,11 @@ body{
 }
 
 .item{
-	text-align: center;
 	display: grid;
     grid-template-rows: auto 1fr auto auto; 
     justify-items: center; 
     align-items: end;
+    margin: 5px;
 }
 
 .btn{
@@ -45,6 +45,7 @@ body{
 
 .quantity {
 	display: none;
+	grid-row: 4;
 }
 
 .quantity-btns {
@@ -58,7 +59,7 @@ body{
 .productsList{
 	grid-row: 1;
 	font-size: 16px;
-	text-shadow: 1px 1px 1px rgba(0,0,0,0.4);
+	font-weight: bold;
 	color: var(--tg-theme-text-color);
 	background: var(--tg-theme-bg-color);
 	margin: 0;
@@ -67,4 +68,22 @@ body{
 
 .btn.add-to-cart-btn {
     grid-row: 3;
+}
+
+.productName{
+	margin-left: 5px;
+	font-size: 15px;
+	text-align: left;
+}
+
+.productDescr{
+	margin-left: 5px;
+	font-size: 15px;
+	text-align: left;
+}
+
+.productPrice{
+	margin-left: 5px;
+	font-size: 15px;
+	text-align: left;
 }

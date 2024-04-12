@@ -1,15 +1,19 @@
 body {
-    margin: 0;
     padding: 0;
     font-size: 18px;
     color: var(--tg-theme-text-color);
     background: var(--tg-theme-bg-color);
+    font-family: "SF Pro Text";
 }
 
-h2 {
-    text-align: left;
-    margin-left: 20px;
+.basket-table {
+    margin: 10px;
     font-size: 20px;
+}
+
+.nameUser{
+    text-transform: uppercase;
+    margin-left: 10px;
 }
 
 #usercard {
@@ -20,10 +24,10 @@ h2 {
 #edit-button {
     display: inline-block;
     float: right;
-    margin: 10px 20px 10px 0px;
+    margin: 20px 20px 10px;
     padding: 10px 20px;
     border: none;
-    background: lightgreen;
+    background: #64e359;
     border-radius: 10px;
     color: #fff;
     text-transform: uppercase;
@@ -34,6 +38,25 @@ h2 {
 
 #edit-button:hover {
     background: green;
+}
+
+.delete-button {
+    display: inline-block;
+    float: right;
+    padding: 10px 15px;
+    border: none;
+    background: red;
+    border-radius: 50%;
+    color: #fff;
+    text-transform: uppercase;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background .2s linear;
+}
+
+.delete-button:hover {
+    background: darkred;
+    width: 40px;
 }
 
 #basket-table {
@@ -54,20 +77,34 @@ h2 {
     font-size: 16px;
 }
 
+.quantity{
+    color:orange; 
+    font-weight: bold;
+}
+
+.price{
+    float: right;
+}
+
+#basket-table td {
+    width: 150px;
+}
+
 #pay-button {
     display: block;
     width: 100%;
     margin: 50px auto;
     padding: 30px 30px;
     border: none;
-    background: rgb(248, 168, 24);
+    background: rgb(91,179,208);
     color: #fff;
     text-transform: uppercase;
     font-weight: 700;
     cursor: pointer;
     transition: background .2s linear;
+    font-size: 17px;
 }
 
 #pay-button:hover {
-    background: lightgreen;
+    background: steelblue;
 }

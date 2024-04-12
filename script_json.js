@@ -14,7 +14,9 @@ async function loadProducts() {
             const productDiv = document.createElement('div');
             const productImage = document.createElement('img');
 
-            productDiv.textContent = `${product.name} • ${product.price} грн`;
+            productDiv.innerHTML = `<span class="productName">${product.name}</span> <br>
+                                    <span class="productDescr">${product.descr}</span> <br>
+                                    <span class="productPrice">${product.price} грн</span>`;
             productImage.src = product.image; 
 
             productsListDiv.appendChild(productImage);

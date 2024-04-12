@@ -10,11 +10,11 @@ document.addEventListener("DOMContentLoaded", function() {
             let cell1 = row.insertCell(0);
             let cell2 = row.insertCell(1);
             let cell3 = row.insertCell(2);
+            let cell4 = row.insertCell(3);
 
             let itemName = item.name;
-
             cell1.innerHTML = `<img src="Img/${item.name}.jpg" alt="Товар" class="img">`;
-            cell2.innerHTML = `<span class="quantity">${item.quantity}</span>`;
+            cell2.innerHTML = `<span class="quantity">${item.quantity}x</span>`;
             let itemPrice = 0;
             switch (item.name) {
                 case '1':
@@ -39,8 +39,13 @@ document.addEventListener("DOMContentLoaded", function() {
                     itemPrice = 0;
             }
 
-            cell3.textContent = `${itemPrice * item.quantity} грн`;
+            cell3.innerHTML = `<span class="price">${itemPrice * item.quantity} грн</span>`;
+            cell4.innerHTML = `<button class="delete-button">X</button>`;
             totalPrice += itemPrice * item.quantity;
+
+            cell4.querySelector(".delete-button").addEventListener("click", function() {
+                basketTable.deleteRow(row.rowIndex);
+            });
         });
 
         let payButton = document.getElementById("pay-button");
@@ -58,6 +63,6 @@ document.addEventListener("DOMContentLoaded", function() {
 document.addEventListener("DOMContentLoaded", function() {
     let editButton = document.getElementById("edit-button");
     editButton.addEventListener("click", function() {
-        window.history.back();
+        window.location.href = "antibiotiki.html";
     });
 });
