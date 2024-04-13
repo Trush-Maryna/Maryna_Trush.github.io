@@ -3,14 +3,6 @@ tg.expand();
 tg.MainButton.textColor = "#FFFFFF";
 tg.MainButton.color = "rgb(91,179,208)";
 
-// Визначте функцію поза обробником події
-function updateMainButtonVisibility(totalPrice, cartItems) {
-    if (cartItems.length > 0) {
-        tg.MainButton.setText(`Оплатити ${totalPrice} грн`);
-        tg.MainButton.show();
-    }
-}
-
 document.addEventListener("DOMContentLoaded", function() {
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
         document.body.classList.remove('dark-theme');
@@ -48,9 +40,8 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 
-    let payButton = document.getElementById("pay-button");
-    payButton.textContent = `Оплатити ${totalPrice} грн`;
-
+    let tgPayButton = new tg.Button("Оплатити " + totalPrice + " грн");
+    
     let usercard = document.getElementById("usercard");
     if (usercard) {
         let userName = localStorage.getItem("userName");
@@ -59,14 +50,17 @@ document.addEventListener("DOMContentLoaded", function() {
         usercard.appendChild(p);
     }
 
-    updateMainButtonVisibility(totalPrice, cartItems); 
-
     function updateTotalPrice() {
         totalPrice = 0;
         cartItems.forEach(function(product) {
             totalPrice += product.price * product.quantity;
         });
-        payButton.textContent = `Оплатити ${totalPrice} грн`;
-        updateMainButtonVisibility(totalPrice, cartItems); 
+        tgPayButton.setText("Оплатити " + totalPrice + " грн");
+    }
+
+    function updateMainButtonVisibility() {
+        if (cartItems.length > 0) {
+            tgPayButton.show();
+        }
     }
 });
