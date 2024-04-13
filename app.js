@@ -14,8 +14,8 @@ items.forEach(item => {
     addToCartBtn.addEventListener("click", function() {
         quantityContainer.style.display = "inline-block";
         addToCartBtn.style.display = "none";
-        let itemId = item.getAttribute("data-item"); 
-        let itemName = item.querySelector(".productName").textContent;
+        let itemName = item.getAttribute("data-item");
+        let itemData = { name: itemName, quantity: parseInt(quantityText.textContent) };
         selectedItems.push(itemData); 
         updateMainButtonVisibility();
         localStorage.setItem("selectedItems", JSON.stringify(selectedItems));
@@ -43,9 +43,9 @@ items.forEach(item => {
         }
     });
 
-    function updateItemQuantity(id, quantity) {
+    function updateItemQuantity(name, quantity) {
         selectedItems.forEach(item => {
-            if (item.id === id) {
+            if (item.name === name) {
                 item.quantity = quantity;
             }
         });
