@@ -1,5 +1,6 @@
 body {
     padding: 0;
+    margin: 10px 0 0 0;
     font-size: 18px;
     color: var(--tg-theme-text-color);
     background: var(--tg-theme-bg-color);
@@ -91,14 +92,12 @@ body {
 }
 
 #delivery-options{
-    max-width: 400px;
-    width: 100%;
+    height: 100%;
     display: block;
     border-start-start-radius: 15px;
     border-top-right-radius: 15px;
     background-color: rgb(91,179,208);
     padding: 20px;
-    position: fixed;
     bottom: 0;
     left: 0;
 }
@@ -121,8 +120,8 @@ body {
 input[type="checkbox"] {
     appearance: none; 
     -moz-appearance: none; 
-    width: 20px;
-    height: 20px; 
+    width: 30px;
+    height: 30px; 
     border-radius: 50%; 
     border: 2px solid #000; 
     background-color: steelblue;
