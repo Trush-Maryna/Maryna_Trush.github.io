@@ -70,7 +70,6 @@ function addToCart(item) {
     let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
     cartItems.push(item);
     localStorage.setItem('cartItems', JSON.stringify(cartItems));
-    alert('Товар додано до кошика!');
 }
 
 function updateItemQuantity(name, quantity) {
