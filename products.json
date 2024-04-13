@@ -1,8 +1,8 @@
 [
-    {"id": 1, "name": "Аугментин (BD)", "descr": "табл. 875 мг + 125 мг", "price": 394, "image": "Img/1.jpg"},
-    {"id": 2, "name": "Азитроміцин-Астрафарм", "descr": "капс. 500 мг", "price": 83, "image": "Img/2.jpg"},
-    {"id": 3, "name": "Фурадонін", "descr": "табл. 100 мг", "price": 104, "image": "Img/3.jpg"},
-    {"id": 4, "name": "Фурагін", "descr": "табл. 50 мг", "price": 159, "image": "Img/4.jpg"},
-    {"id": 5, "name": "Ніфуроксазид Алкалоїд", "descr": "капсули тв. по 200 мг", "price": 123, "image": "Img/5.jpg"},
-    {"id": 6, "name": "Амоксил", "descr": "табл. 500 мг", "price": 152, "image": "Img/6.jpg"}
+    {"id": 1, "name": "Аугментин (BD)", "descr": "табл. 875 мг + 125 мг", "price": 394, "image": "https://trush-maryna.github.io/Maryna_Trush.github.io/Img/1.jpg"},
+    {"id": 2, "name": "Азитроміцин-Астрафарм", "descr": "капс. 500 мг", "price": 83, "image": "https://trush-maryna.github.io/Maryna_Trush.github.io/Img/2.jpg"},
+    {"id": 3, "name": "Фурадонін", "descr": "табл. 100 мг", "price": 104, "image": "https://trush-maryna.github.io/Maryna_Trush.github.io/Img/3.jpg"},
+    {"id": 4, "name": "Фурагін", "descr": "табл. 50 мг", "price": 159, "image": "https://trush-maryna.github.io/Maryna_Trush.github.io/Img/4.jpg"},
+    {"id": 5, "name": "Ніфуроксазид Алкалоїд", "descr": "капсули тв. по 200 мг", "price": 123, "image": "https://trush-maryna.github.io/Maryna_Trush.github.io/Img/5.jpg"},
+    {"id": 6, "name": "Амоксил", "descr": "табл. 500 мг", "price": 152, "image": "https://trush-maryna.github.io/Maryna_Trush.github.io/Img/6.jpg"}
 ]

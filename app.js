@@ -4,6 +4,7 @@ tg.MainButton.textColor = "#FFFFFF";
 tg.MainButton.color = "#2cab37";
 let selectedItems = []; 
 let items = document.querySelectorAll(".item");
+
 items.forEach(item => {
     let quantityText = item.querySelector(".quantity-text");
     let plusBtn = item.querySelector(".plus-btn");
@@ -14,9 +15,9 @@ items.forEach(item => {
     addToCartBtn.addEventListener("click", function() {
         quantityContainer.style.display = "inline-block";
         addToCartBtn.style.display = "none";
-        let itemName = item.getAttribute("data-item");
-        let itemData = { name: itemName, quantity: parseInt(quantityText.textContent) };
-        selectedItems.push(itemData); 
+        let itemId = item.getAttribute("data-item"); 
+        let itemName = item.querySelector(".productName").textContent;
+        selectedItems.push({ id: itemId, name: itemName, quantity: 1 });
         updateMainButtonVisibility();
         localStorage.setItem("selectedItems", JSON.stringify(selectedItems));
     });
@@ -43,9 +44,9 @@ items.forEach(item => {
         }
     });
 
-    function updateItemQuantity(name, quantity) {
+    function updateItemQuantity(id, quantity) {
         selectedItems.forEach(item => {
-            if (item.name === name) {
+            if (item.id === id) {
                 item.quantity = quantity;
             }
         });

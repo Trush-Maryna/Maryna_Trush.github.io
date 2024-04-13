@@ -7,14 +7,6 @@ body {
     max-width: 400px;
 }
 
-.light-theme {
-    color: #000;
-}
-
-.dark-theme {
-    color: #fff;
-}
-
 .basket-table {
     margin: 10px;
     font-size: 20px;
