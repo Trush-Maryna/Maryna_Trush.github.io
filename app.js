@@ -15,10 +15,9 @@ items.forEach(item => {
         quantityContainer.style.display = "inline-block";
         addToCartBtn.style.display = "none";
         let itemName = item.getAttribute("data-item");
-        let itemData = { name: itemName, quantity: parseInt(quantityText.textContent) };
-        selectedItems.push(itemData); 
+        let quantity = parseInt(quantityText.textContent);
+        selectedItems.push({ name: itemName, quantity: quantity });
         updateMainButtonVisibility();
-        localStorage.setItem("selectedItems", JSON.stringify(selectedItems));
     });
     
     plusBtn.addEventListener("click", function() {
@@ -61,8 +60,10 @@ items.forEach(item => {
 });
 
 Telegram.WebApp.onEvent("mainButtonClicked", function() {
+    let selectedItemsQueryParam = encodeURIComponent(JSON.stringify(selectedItems));
+    let url = "orderBasket.html?selectedItems=" + selectedItemsQueryParam;
     localStorage.setItem("selectedItems", JSON.stringify(selectedItems));
     localStorage.setItem("userName", tg.initDataUnsafe.user.first_name);
     tg.MainButton.hide();
-    window.location.href = "orderBasket.html";
+    window.location.href = url;
 });

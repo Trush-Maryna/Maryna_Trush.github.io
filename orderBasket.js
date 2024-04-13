@@ -1,8 +1,11 @@
+let tg = window.Telegram.WebApp;
+tg.expand();
+tg.MainButton.textColor = "#FFFFFF";
+tg.MainButton.color = "rgb(91,179,208)";
 document.addEventListener("DOMContentLoaded", function() {
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
         document.body.classList.remove('dark-theme');
         document.body.classList.add('light-theme');
-        
     }
 
     let editButton = document.getElementById("edit-button");
@@ -10,63 +13,55 @@ document.addEventListener("DOMContentLoaded", function() {
         window.location.href = "antibiotiki.html";
     });
 
-    let selectedItems = JSON.parse(localStorage.getItem("selectedItems"));
-    let userName = localStorage.getItem("userName");
-    if (selectedItems) {
-        let basketTable = document.getElementById("basket-table");
-        let totalPrice = 0;
+    let totalPrice = 0;
 
-        selectedItems.forEach((item, index) => {
-            let row = basketTable.insertRow(-1);
-            let cell1 = row.insertCell(0);
-            let cell2 = row.insertCell(1);
-            let cell3 = row.insertCell(2);
-            let cell4 = row.insertCell(3);
+    let basketTable = document.getElementById("basket-table");
+    let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+    cartItems.forEach(function(product) {
+        let row = basketTable.insertRow(-1);
+        let cell1 = row.insertCell(0);
+        let cell2 = row.insertCell(1);
+        let cell3 = row.insertCell(2);
+        let cell4 = row.insertCell(3);
 
-            let itemName = item.name;
-            cell1.innerHTML = `<img src="Img/${item.name}.jpg" alt="Товар" class="img">`;
-            cell2.innerHTML = `<span class="quantity">${item.quantity}x</span>`;
-            let itemPrice = 0;
-            switch (item.name) {
-                case '1':
-                    itemPrice = 263;
-                    break;
-                case '2':
-                    itemPrice = 83;
-                    break;
-                case '3':
-                    itemPrice = 111;
-                    break;
-                case '4':
-                    itemPrice = 159;
-                    break;
-                case '5':
-                    itemPrice = 173;
-                    break;
-                case '6':
-                    itemPrice = 106;
-                    break;
-                default:
-                    itemPrice = 0;
-            }
+        cell1.innerHTML = `<img src="${product.image}" alt="Товар" class="img">`;
+        cell2.innerHTML = `<span class="quantity">${product.quantity}x</span>`;
+        cell3.innerHTML = `<span class="price">${product.price * product.quantity} грн</span>`;
+        cell4.innerHTML = `<button class="delete-button">X</button>`;
+        totalPrice += product.price * product.quantity;
 
-            cell3.innerHTML = `<span class="price">${itemPrice * item.quantity} грн</span>`;
-            cell4.innerHTML = `<button class="delete-button">X</button>`;
-            totalPrice += itemPrice * item.quantity;
-
-            cell4.querySelector(".delete-button").addEventListener("click", function() {
-                basketTable.deleteRow(row.rowIndex);
-            });
+        cell4.querySelector(".delete-button").addEventListener("click", function() {
+            let rowIndex = this.parentElement.parentElement.rowIndex;
+            basketTable.deleteRow(rowIndex);
+            cartItems.splice(rowIndex - 1, 1);
+            localStorage.setItem('cartItems', JSON.stringify(cartItems));
+            updateTotalPrice();
         });
+    });
 
-        let payButton = document.getElementById("pay-button");
+    let payButton = document.getElementById("pay-button");
+    payButton.textContent = `Оплатити ${totalPrice} грн`;
+
+    let usercard = document.getElementById("usercard");
+    if (usercard) {
+        let userName = localStorage.getItem("userName");
+        let p = document.createElement("p");
+        p.innerText = userName;
+        usercard.appendChild(p);
+    }
+
+    function updateTotalPrice() {
+        totalPrice = 0;
+        cartItems.forEach(function(product) {
+            totalPrice += product.price * product.quantity;
+        });
         payButton.textContent = `Оплатити ${totalPrice} грн`;
+    }
 
-        let usercard = document.getElementById("usercard");
-        if (usercard) {
-            let p = document.createElement("p");
-            p.innerText = userName;
-            usercard.appendChild(p);
+    function updateMainButtonVisibility() {
+        if (cartItems.length > 0) {
+            tg.MainButton.setText(`Оплатити ${totalPrice} грн`);
+            tg.MainButton.show();
         }
     }
 });
