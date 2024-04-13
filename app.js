@@ -4,7 +4,6 @@ tg.MainButton.textColor = "#FFFFFF";
 tg.MainButton.color = "#2cab37";
 let selectedItems = []; 
 let items = document.querySelectorAll(".item");
-
 items.forEach(item => {
     let quantityText = item.querySelector(".quantity-text");
     let plusBtn = item.querySelector(".plus-btn");
@@ -17,7 +16,7 @@ items.forEach(item => {
         addToCartBtn.style.display = "none";
         let itemId = item.getAttribute("data-item"); 
         let itemName = item.querySelector(".productName").textContent;
-        selectedItems.push({ id: itemId, name: itemName, quantity: 1 });
+        selectedItems.push(itemData); 
         updateMainButtonVisibility();
         localStorage.setItem("selectedItems", JSON.stringify(selectedItems));
     });
