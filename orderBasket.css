@@ -10,7 +10,6 @@ body {
 .basket-table {
     margin: 10px;
     font-size: 20px;
-
 }
 
 .nameUser{
@@ -91,23 +90,59 @@ body {
     width: 150px;
 }
 
-#pay-button {
-    display: block;
+#delivery-options{
+    max-width: 400px;
     width: 100%;
-    padding: 20px 20px;
-    border: none;
-    background: rgb(91,179,208);
-    color: #fff;
-    text-transform: uppercase;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background .2s linear;
-    font-size: 17px;
+    display: block;
+    border-start-start-radius: 15px;
+    border-top-right-radius: 15px;
+    background-color: rgb(91,179,208);
+    padding: 20px;
     position: fixed;
     bottom: 0;
     left: 0;
 }
 
-#pay-button:hover {
-    background: steelblue;
+.finalPrice{
+    float: right;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.checkbox-container {
+  display: flex;
+  align-items: center;
+}
+
+.checkbox-container input[type="checkbox"] {
+  margin-right: 5px;
+}
+
+input[type="checkbox"] {
+    appearance: none; 
+    -moz-appearance: none; 
+    width: 20px;
+    height: 20px; 
+    border-radius: 50%; 
+    border: 2px solid #000; 
+    background-color: steelblue;
+    outline: none; 
+    cursor: pointer; 
+}
+
+input[type="checkbox"]:checked {
+    background-color: #f2f3f4;
+}
+
+#pay-button {
+    width: 100%;
+    padding: 10px 10px;
+    border: none;
+    border-radius: 20px;
+    background: #f2f3f4;
+    color: #000;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background .2s linear;
+    font-size: 17px;
 }

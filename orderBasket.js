@@ -1,8 +1,3 @@
-let tg = window.Telegram.WebApp;
-tg.expand();
-tg.MainButton.textColor = "#FFFFFF";
-tg.MainButton.color = "rgb(91,179,208)";
-
 document.addEventListener("DOMContentLoaded", function() {
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
         document.body.classList.remove('dark-theme');
@@ -40,14 +35,39 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 
-    let tgPayButton = new tg.Button("Оплатити " + totalPrice + " грн");
-    
-    let usercard = document.getElementById("usercard");
-    if (usercard) {
-        let userName = localStorage.getItem("userName");
-        let p = document.createElement("p");
-        p.innerText = userName;
-        usercard.appendChild(p);
+    let deliverySummary = document.getElementById("delivery-summary");
+
+    function updateDeliverySummary() {
+        let totalItems = 0;
+        cartItems.forEach(function(product) {
+            totalItems += product.quantity;
+        });
+
+        let ending;
+        if (totalItems === 1) {
+            ending = "товар";
+        } else if (totalItems % 10 === 2 || totalItems % 10 === 3 || totalItems % 10 === 4) {
+            ending = "товари";
+        } else {
+            ending = "товарів";
+        }
+
+        deliverySummary.innerHTML = `${totalItems} ${ending} на суму: <span class="finalPrice">${totalPrice} грн</span>`;
+    }
+
+    updateDeliverySummary();
+
+    let payButton = document.getElementById("pay-button");
+
+    let pickupCheckbox = document.getElementById("pickup-checkbox");
+    let deliveryCheckbox = document.getElementById("delivery-checkbox");
+
+    function updateDeliveryButton() {
+        if (pickupCheckbox.checked || deliveryCheckbox.checked) {
+            payButton.textContent = `Оплатити ${totalPrice} грн`;
+        } else {
+            payButton.textContent = "Оберіть доставку";
+        }
     }
 
     function updateTotalPrice() {
@@ -55,12 +75,20 @@ document.addEventListener("DOMContentLoaded", function() {
         cartItems.forEach(function(product) {
             totalPrice += product.price * product.quantity;
         });
-        tgPayButton.setText("Оплатити " + totalPrice + " грн");
+        updateDeliveryButton();
     }
 
-    function updateMainButtonVisibility() {
-        if (cartItems.length > 0) {
-            tgPayButton.show();
+    pickupCheckbox.addEventListener("change", function() {
+        if (pickupCheckbox.checked) {
+            deliveryCheckbox.checked = false;
         }
-    }
+        updateDeliveryButton();
+    });
+
+    deliveryCheckbox.addEventListener("change", function() {
+        if (deliveryCheckbox.checked) {
+            pickupCheckbox.checked = false;
+        }
+        updateDeliveryButton();
+    });
 });

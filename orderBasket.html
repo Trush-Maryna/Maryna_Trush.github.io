@@ -15,8 +15,19 @@
             <!-- Товари кошику замовлень -->
         </tbody>
     </table>
-    
-    <!--<button id="pay-button">Оплатити</button>-->
+
+    <div id="delivery-options">
+        <p id="delivery-summary"></p>
+        <br>
+        <label class="checkbox-container">
+          <input type="checkbox" id="pickup-checkbox" onchange="updateDeliveryButton()">
+          <span style="margin-right: 20px;">Самовивіз</span>
+          <input type="checkbox" id="delivery-checkbox" onchange="updateDeliveryButton()">
+          <span>Служба доставки</span>
+        </label>
+        <br><br>
+        <button id="pay-button">Оберіть доставку</button>
+    </div>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="script_json.js"></script>
     <script src="orderBasket.js"></script>
