@@ -1,5 +1,11 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener("DOMContentLoaded", function() {
+    let editButton = document.getElementById("edit-button");
+    editButton.addEventListener("click", function() {
+        window.location.href = "antibiotiki.html";
+    });
+
     loadProducts();
+    updateBasket();
 });
 
 async function loadProducts() {

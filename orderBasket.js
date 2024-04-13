@@ -1,4 +1,10 @@
 document.addEventListener("DOMContentLoaded", function() {
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
+        document.body.classList.remove('dark-theme');
+        document.body.classList.add('light-theme');
+        
+    }
+
     let editButton = document.getElementById("edit-button");
     editButton.addEventListener("click", function() {
         window.location.href = "antibiotiki.html";
@@ -18,21 +24,40 @@ document.addEventListener("DOMContentLoaded", function() {
             let cell4 = row.insertCell(3);
 
             let itemName = item.name;
-            cell1.innerHTML = `<img src="${item.image}" alt="Товар" class="img">`;
+            cell1.innerHTML = `<img src="Img/${item.name}.jpg" alt="Товар" class="img">`;
             cell2.innerHTML = `<span class="quantity">${item.quantity}x</span>`;
-            cell3.innerHTML = `<span class="price">${item.price * item.quantity} грн</span>`;
+            let itemPrice = 0;
+            switch (item.name) {
+                case '1':
+                    itemPrice = 263;
+                    break;
+                case '2':
+                    itemPrice = 83;
+                    break;
+                case '3':
+                    itemPrice = 111;
+                    break;
+                case '4':
+                    itemPrice = 159;
+                    break;
+                case '5':
+                    itemPrice = 173;
+                    break;
+                case '6':
+                    itemPrice = 106;
+                    break;
+                default:
+                    itemPrice = 0;
+            }
+
+            cell3.innerHTML = `<span class="price">${itemPrice * item.quantity} грн</span>`;
             cell4.innerHTML = `<button class="delete-button">X</button>`;
-            totalPrice += item.price * item.quantity;
+            totalPrice += itemPrice * item.quantity;
 
             cell4.querySelector(".delete-button").addEventListener("click", function() {
                 basketTable.deleteRow(row.rowIndex);
-                selectedItems.splice(index, 1);
-                localStorage.setItem("selectedItems", JSON.stringify(selectedItems));
-                updateTotalPrice();
             });
         });
-
-        updateTotalPrice();
 
         let payButton = document.getElementById("pay-button");
         payButton.textContent = `Оплатити ${totalPrice} грн`;
@@ -45,13 +70,3 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 });
-
-function updateTotalPrice() {
-    let selectedItems = JSON.parse(localStorage.getItem("selectedItems"));
-    let totalPrice = 0;
-    selectedItems.forEach(item => {
-        totalPrice += item.price * item.quantity;
-    });
-    let payButton = document.getElementById("pay-button");
-    payButton.textContent = `Оплатити ${totalPrice} грн`;
-}
