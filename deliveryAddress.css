@@ -1,0 +1,121 @@
+body {
+    padding: 0;
+    margin: 10px 0 0 0;
+    font-size: 18px;
+    color: var(--tg-theme-text-color);
+    background: var(--tg-theme-bg-color);
+    font-family: "SF Pro Text";
+    max-width: 400px;
+}
+
+input[type="checkbox"] {
+    appearance: none; 
+    -moz-appearance: none; 
+    width: 30px;
+    height: 30px; 
+    border-radius: 50%; 
+    border: 1.5px solid #000; 
+    background-color: steelblue;
+    outline: none; 
+    cursor: pointer; 
+}
+
+input[type="checkbox"]:checked {
+    background-color: #f2f3f4;
+}
+
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+}
+
+.button-container{
+  align-items: center;
+  margin-left: 10px;
+}
+
+.checkbox-container input[type="checkbox"] {
+  margin-right: 5px;
+}
+
+#save-data-checkbox {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background-color: steelblue;
+    border-radius: 10px;
+    position: relative;
+    margin-left: 10px;
+}
+
+#save-data-checkbox:checked::after {
+    content: "\2713";
+    font-size: 15px;
+    color: #fff; 
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.delivery-input{
+    margin: 20px 0px 20px 20px;
+}
+
+.delivery-input input {
+    width: 100%;
+    height: 30px;
+    border: none;
+    border-bottom: 1px solid rgb(91,179,208);
+    font-size: 16px;
+}
+
+.delivery-input .placeholder-label {
+    position: absolute;
+    color: rgb(91,179,208);
+    pointer-events: none;
+}
+
+.delivery-input input:focus {
+    outline: none;
+}
+
+.delivery-input input:focus + .placeholder-label {
+    top: -10px;
+}
+
+#region-input::placeholder {color: #fff; }
+
+#city-input::placeholder {color: #fff; }
+
+#office-input::placeholder {color: #fff;}
+
+#name-input::placeholder {color: #fff;}
+
+#phone-input::placeholder {color: #fff;}
+
+.cancel-button, .save-button {
+    font-size: 15px;
+    font-weight: bold;
+    background-color: white;
+    color: rgb(91,179,208);
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    margin-left: 10px;
+    cursor: pointer;
+    text-transform: uppercase;
+}
+
+.cancel-button{
+    float: center;
+}
+
+.save-button{
+    float: right;
+}
+
+.cancel-button:hover, .save-button:hover {
+    background-color: #e3f1fa;
+}

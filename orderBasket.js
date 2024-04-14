@@ -1,8 +1,17 @@
 document.addEventListener("DOMContentLoaded", function() {
+    let tg = window.Telegram.WebApp;
+    tg.expand();
+
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
         document.body.classList.remove('dark-theme');
         document.body.classList.add('light-theme');
     }
+
+    let usercard = document.getElementById("usercard");
+    let p = document.createElement("p");
+    p.innerText = `${tg.initDataUnsafe.first_name}
+    ${tg.initDataUnsafe.last_name}`;
+    usercard.appendChild(p);
 
     let editButton = document.getElementById("edit-button");
     editButton.addEventListener("click", function() {
@@ -58,9 +67,9 @@ document.addEventListener("DOMContentLoaded", function() {
     updateDeliverySummary();
 
     let payButton = document.getElementById("pay-button");
-
     let pickupCheckbox = document.getElementById("pickup-checkbox");
     let deliveryCheckbox = document.getElementById("delivery-checkbox");
+    let deliveryAddressButton = document.getElementById("deliveryAddress");
 
     function updateDeliveryButton() {
         if (pickupCheckbox.checked || deliveryCheckbox.checked) {
@@ -72,16 +81,28 @@ document.addEventListener("DOMContentLoaded", function() {
 
     pickupCheckbox.addEventListener("change", function() {
         if (pickupCheckbox.checked) {
+            deliveryAddressButton.style.display = "none";
             deliveryCheckbox.checked = false;
+            showUkraineMap();
+        } else {
+            deliveryAddressButton.style.display = "none";
         }
         updateDeliveryButton();
     });
 
     deliveryCheckbox.addEventListener("change", function() {
         if (deliveryCheckbox.checked) {
+            deliveryAddressButton.style.display = "flex";
             pickupCheckbox.checked = false;
+            hideUkraineMap();
+        } else {
+            deliveryAddressButton.style.display = "none";
         }
         updateDeliveryButton();
+    });
+
+    deliveryAddressButton.addEventListener("click", function() {
+        window.location.href = "deliveryAddress.html";
     });
 
     let deleteButtons = document.querySelectorAll(".delete-button");
@@ -110,34 +131,20 @@ document.addEventListener("DOMContentLoaded", function() {
         updateDeliverySummary();
     }
 
-    let pickupDetails = document.getElementById("pickup-details");
-
-    pickupCheckbox.addEventListener("change", function() {
-        if (pickupCheckbox.checked) {
-            pickupDetails.style.display = "block";
-            hideUkraineMap();
-        } else if (deliveryCheckbox.checked) {
-            pickupDetails.style.display = "none";
-            showUkraineMap();
-        }
-        updateDeliveryButton();
-    });
-
-    deliveryCheckbox.addEventListener("change", function() {
-        if (deliveryCheckbox.checked) {
-            pickupDetails.style.display = "none";
-            showUkraineMap();
-        } else {
-            hideUkraineMap();
-        }
-        updateDeliveryButton();
-    });
-
     function showUkraineMap() {
         // Код для відображення карти України
     }
 
     function hideUkraineMap() {
         // Код для приховування карти України
+    }
+
+    let savedDeliveryData = JSON.parse(localStorage.getItem('deliveryData'));
+    if (savedDeliveryData) {
+        document.getElementById("region-input").value = savedDeliveryData.region;
+        document.getElementById("city-input").value = savedDeliveryData.city;
+        document.getElementById("office-input").value = savedDeliveryData.office;
+        document.getElementById("name-input").value = savedDeliveryData.name;
+        document.getElementById("phone-input").value = savedDeliveryData.phone;
     }
 });

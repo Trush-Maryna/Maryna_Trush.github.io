@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Адреса</title>
+	<link rel="stylesheet" href="deliveryAddress.css">
+</head>
+<body>
+	<div id="delivery-details">
+        <div class="delivery-input">
+            <label for="region-input" class="placeholder-label">Область</label><br>
+            <input type="text" id="region-input"><br><br>
+            <label for="city-input" class="placeholder-label">Місто</label><br>
+            <input type="text" id="city-input"><br><br>
+            <label for="office-input" class="placeholder-label">Відділення</label><br>
+            <input type="text" id="office-input"><br><br>
+            <label for="name-input" class="placeholder-label">ПІБ</label><br>
+            <input type="name" id="name-input"><br><br>
+            <label for="phone-input" class="placeholder-label">Номер телефону</label><br>
+            <input type="tel" id="phone-input"><br>
+        </div>
+        <div class="button-container">
+	        <button id="btn_cancel" class="cancel-button">Скасувати</button>
+    		<button id="btn_save" class="save-button">Зберегти</button>
+    	</div>
+    </div>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="script_json.js"></script>
+    <script src="deliveryAddress.js"></script>
+</body>
+</html>
