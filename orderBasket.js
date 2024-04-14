@@ -1,17 +1,10 @@
+let tg = window.Telegram.WebApp;
+tg.expand();
 document.addEventListener("DOMContentLoaded", function() {
-    let tg = window.Telegram.WebApp;
-    tg.expand();
-
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
         document.body.classList.remove('dark-theme');
         document.body.classList.add('light-theme');
     }
-
-    let usercard = document.getElementById("usercard");
-    let p = document.createElement("p");
-    p.innerText = `${tg.initDataUnsafe.first_name}
-    ${tg.initDataUnsafe.last_name}`;
-    usercard.appendChild(p);
 
     let editButton = document.getElementById("edit-button");
     editButton.addEventListener("click", function() {
@@ -122,6 +115,23 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 
+    payButton.addEventListener("click", function() {
+        let savedDeliveryData = JSON.parse(localStorage.getItem('deliveryData'));
+
+        let cartItems = JSON.parse(localStorage.getItem('cartItems'));
+        let totalPrice = 0;
+        let itemsDescription = "";
+
+        cartItems.forEach(function(product) {
+            itemsDescription += `${product.name}: ${product.descr}, Кількість: ${product.quantity}\n`;
+            totalPrice += product.price * product.quantity;
+        });
+
+        let message = `ПІБ: ${savedDeliveryData.name}\nОбласть: ${savedDeliveryData.region}\nМісто: ${savedDeliveryData.city}\nВідділення: ${savedDeliveryData.office}\n\nЗамовлення:\n${itemsDescription}\nЗагальна ціна: ${totalPrice} грн`;
+
+        tg.sendData(message);
+    });
+
     function updateTotalPrice() {
         totalPrice = 0;
         cartItems.forEach(function(product) {
@@ -138,13 +148,10 @@ document.addEventListener("DOMContentLoaded", function() {
     function hideUkraineMap() {
         // Код для приховування карти України
     }
-
-    let savedDeliveryData = JSON.parse(localStorage.getItem('deliveryData'));
-    if (savedDeliveryData) {
-        document.getElementById("region-input").value = savedDeliveryData.region;
-        document.getElementById("city-input").value = savedDeliveryData.city;
-        document.getElementById("office-input").value = savedDeliveryData.office;
-        document.getElementById("name-input").value = savedDeliveryData.name;
-        document.getElementById("phone-input").value = savedDeliveryData.phone;
-    }
 });
+
+let usercard = document.getElementById("usercard");
+let p = document.createElement("p");
+p.innerText = `${tg.initDataUnsafe.first_name}
+${tg.initDataUnsafe.last_name}`;
+usercard.appendChild(p);
