@@ -28,9 +28,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
         cell4.querySelector(".delete-button").addEventListener("click", function() {
             let rowIndex = this.parentElement.parentElement.rowIndex;
-            basketTable.deleteRow(rowIndex);
-            cartItems.splice(rowIndex - 1, 1);
+            let deletedProduct = cartItems.splice(rowIndex, 1)[0];
             localStorage.setItem('cartItems', JSON.stringify(cartItems));
+            this.parentElement.parentElement.remove();
             updateTotalPrice();
         });
     });
@@ -70,14 +70,6 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
-    function updateTotalPrice() {
-        totalPrice = 0;
-        cartItems.forEach(function(product) {
-            totalPrice += product.price * product.quantity;
-        });
-        updateDeliveryButton();
-    }
-
     pickupCheckbox.addEventListener("change", function() {
         if (pickupCheckbox.checked) {
             deliveryCheckbox.checked = false;
@@ -91,4 +83,61 @@ document.addEventListener("DOMContentLoaded", function() {
         }
         updateDeliveryButton();
     });
+
+    let deleteButtons = document.querySelectorAll(".delete-button");
+    deleteButtons.forEach(function(button) {
+        button.addEventListener("click", function() {
+            let rowIndex = this.parentElement.parentElement.rowIndex;
+            if (rowIndex>= 0 && rowIndex < cartItems.length) {
+                let deletedProduct = cartItems[rowIndex];
+                deletedProduct.quantity--; 
+                if (deletedProduct.quantity === 0) {
+                    cartItems.splice(rowIndex, 1); 
+                }
+                localStorage.setItem('cartItems', JSON.stringify(cartItems));
+                this.parentElement.parentElement.remove();
+                updateTotalPrice();
+            }
+        });
+    });
+
+    function updateTotalPrice() {
+        totalPrice = 0;
+        cartItems.forEach(function(product) {
+            totalPrice += product.price * product.quantity;
+        });
+        updateDeliveryButton();
+        updateDeliverySummary();
+    }
+
+    let pickupDetails = document.getElementById("pickup-details");
+
+    pickupCheckbox.addEventListener("change", function() {
+        if (pickupCheckbox.checked) {
+            pickupDetails.style.display = "block";
+            hideUkraineMap();
+        } else if (deliveryCheckbox.checked) {
+            pickupDetails.style.display = "none";
+            showUkraineMap();
+        }
+        updateDeliveryButton();
+    });
+
+    deliveryCheckbox.addEventListener("change", function() {
+        if (deliveryCheckbox.checked) {
+            pickupDetails.style.display = "none";
+            showUkraineMap();
+        } else {
+            hideUkraineMap();
+        }
+        updateDeliveryButton();
+    });
+
+    function showUkraineMap() {
+        // Код для відображення карти України
+    }
+
+    function hideUkraineMap() {
+        // Код для приховування карти України
+    }
 });

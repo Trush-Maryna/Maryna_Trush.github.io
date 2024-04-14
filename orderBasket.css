@@ -15,7 +15,7 @@ body {
 
 .nameUser{
     text-transform: uppercase;
-    margin-left: 10px;
+    margin-left: 5px;
 }
 
 #usercard {
@@ -92,14 +92,20 @@ body {
 }
 
 #delivery-options{
-    height: 100%;
-    display: block;
+    position: relative;
+    min-height: 100vh;
     border-start-start-radius: 15px;
     border-top-right-radius: 15px;
     background-color: rgb(91,179,208);
     padding: 20px;
     bottom: 0;
     left: 0;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
 }
 
 .finalPrice{
@@ -123,7 +129,7 @@ input[type="checkbox"] {
     width: 30px;
     height: 30px; 
     border-radius: 50%; 
-    border: 2px solid #000; 
+    border: 1.5px solid #000; 
     background-color: steelblue;
     outline: none; 
     cursor: pointer; 
@@ -131,6 +137,74 @@ input[type="checkbox"] {
 
 input[type="checkbox"]:checked {
     background-color: #f2f3f4;
+}
+
+#save-data-checkbox {
+    display: none;
+}
+
+#save-data-checkbox {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background-color: steelblue;
+    border-radius: 10px;
+    position: relative;
+}
+
+#save-data-checkbox:checked::after {
+    content: "\2713";
+    font-size: 15px;
+    color: #fff; 
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.pickup-input{
+    margin: 20px 0px 20px 0px;
+}
+
+.pickup-input input {
+    background-color: rgb(91,179,208);
+    width: 100%;
+    height: 25px;
+    border: none;
+    border-bottom: 1px solid white;
+}
+
+.pickup-input .placeholder-label {
+    position: absolute;
+    color: #fff;
+    pointer-events: none;
+}
+
+.pickup-input input:focus {
+    outline: none;
+}
+
+.pickup-input input:focus + .placeholder-label {
+    top: -10px;
+}
+
+#region-input::placeholder {
+    color: #fff; 
+}
+
+
+#city-input::placeholder {
+    color: #fff; 
+}
+
+
+#office-input::placeholder {
+    color: #fff;
+}
+
+
+#phone-input::placeholder {
+    color: #fff;
 }
 
 #pay-button {
