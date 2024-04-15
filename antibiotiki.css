@@ -11,6 +11,36 @@ body{
 	max-width: 400px;
 }
 
+#delivery-options{
+    position: relative;
+    min-height: 100vh;
+    border-start-start-radius: 15px;
+    border-top-right-radius: 15px;
+    background-color: rgb(91,179,208);
+    padding: 20px;
+    bottom: 0;
+    left: 0;
+}
+
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+#pay-button {
+    width: 100%;
+    padding: 10px 10px;
+    border: none;
+    border-radius: 20px;
+    background: #f2f3f4;
+    color: #000;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background .2s linear;
+    font-size: 17px;
+}
+
 .inner{
 	display: grid;
 	grid-template-columns: 1fr 1fr;
