@@ -1,13 +1,21 @@
+const fetch = require('node-fetch');
+const jsdom = require('jsdom');
+const { JSDOM } = jsdom;
+
+const dom = new JSDOM();
+const { document } = dom.window;
+
 let tg = global.Telegram.WebApp;
 tg.expand();
-document.addEventListener("DOMContentLoaded", function() {
+
+document.addEventListener("DOMContentLoaded", () => {
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
         document.body.classList.remove('dark-theme');
         document.body.classList.add('light-theme');
     }
 
     let editButton = document.getElementById("edit-button");
-    editButton.addEventListener("click", function() {
+    editButton.addEventListener("click", () => {
         window.location.href = "antibiotiki.html";
     });
 
@@ -15,7 +23,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     let basketTable = document.getElementById("basket-table");
     let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
-    cartItems.forEach(function(product) {
+    cartItems.forEach((product) => {
         let row = basketTable.insertRow(-1);
         let cell1 = row.insertCell(0);
         let cell2 = row.insertCell(1);
@@ -28,11 +36,11 @@ document.addEventListener("DOMContentLoaded", function() {
         cell4.innerHTML = `<button class="delete-button">X</button>`;
         totalPrice += product.price * product.quantity;
 
-        cell4.querySelector(".delete-button").addEventListener("click", function() {
-            let rowIndex = this.parentElement.parentElement.rowIndex;
+        cell4.querySelector(".delete-button").addEventListener("click", () => {
+            let rowIndex = cell4.parentElement.rowIndex;
             let deletedProduct = cartItems.splice(rowIndex, 1)[0];
             localStorage.setItem('cartItems', JSON.stringify(cartItems));
-            this.parentElement.parentElement.remove();
+            cell4.parentElement.remove();
             updateTotalPrice();
         });
     });
@@ -41,7 +49,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     function updateDeliverySummary() {
         let totalItems = 0;
-        cartItems.forEach(function(product) {
+        cartItems.forEach((product) => {
             totalItems += product.quantity;
         });
 
@@ -72,7 +80,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
-    pickupCheckbox.addEventListener("change", function() {
+    pickupCheckbox.addEventListener("change", () => {
         if (pickupCheckbox.checked) {
             deliveryAddressButton.style.display = "none";
             deliveryCheckbox.checked = false;
@@ -83,7 +91,7 @@ document.addEventListener("DOMContentLoaded", function() {
         updateDeliveryButton();
     });
 
-    deliveryCheckbox.addEventListener("change", function() {
+    deliveryCheckbox.addEventListener("change", () => {
         if (deliveryCheckbox.checked) {
             deliveryAddressButton.style.display = "flex";
             pickupCheckbox.checked = false;
@@ -94,28 +102,28 @@ document.addEventListener("DOMContentLoaded", function() {
         updateDeliveryButton();
     });
 
-    deliveryAddressButton.addEventListener("click", function() {
+    deliveryAddressButton.addEventListener("click", () => {
         window.location.href = "deliveryAddress.html";
     });
 
     let deleteButtons = document.querySelectorAll(".delete-button");
-    deleteButtons.forEach(function(button) {
-        button.addEventListener("click", function() {
-            let rowIndex = this.parentElement.parentElement.rowIndex;
-            if (rowIndex>= 0 && rowIndex < cartItems.length) {
+    deleteButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+            let rowIndex = button.parentElement.parentElement.rowIndex;
+            if (rowIndex >= 0 && rowIndex < cartItems.length) {
                 let deletedProduct = cartItems[rowIndex];
-                deletedProduct.quantity--; 
+                deletedProduct.quantity--;
                 if (deletedProduct.quantity === 0) {
-                    cartItems.splice(rowIndex, 1); 
+                    cartItems.splice(rowIndex, 1);
                 }
                 localStorage.setItem('cartItems', JSON.stringify(cartItems));
-                this.parentElement.parentElement.remove();
+                button.parentElement.parentElement.remove();
                 updateTotalPrice();
             }
         });
     });
 
-    payButton.addEventListener("click", function() {
+    payButton.addEventListener("click", () => {
         const orderInfo = `ПІБ: ${savedDeliveryData.name}\nОбласть: ${savedDeliveryData.region}\nМісто: ${savedDeliveryData.city}\nВідділення: ${savedDeliveryData.office}\n\nЗамовлення:\n${itemsDescription}\nЗагальна ціна: ${totalPrice} грн`;
 
         fetch('/send-order-message', {
@@ -137,7 +145,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     function updateTotalPrice() {
         totalPrice = 0;
-        cartItems.forEach(function(product) {
+        cartItems.forEach((product) => {
             totalPrice += product.price * product.quantity;
         });
         updateDeliveryButton();

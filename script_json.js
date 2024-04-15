@@ -1,4 +1,11 @@
-document.addEventListener('DOMContentLoaded', function() {
+const fetch = require('node-fetch');
+const jsdom = require('jsdom');
+const { JSDOM } = jsdom;
+
+const dom = new JSDOM();
+const { document } = dom.window;
+
+document.addEventListener('DOMContentLoaded', () => {
     loadProducts();
 });
 
@@ -25,7 +32,7 @@ async function loadProducts() {
             const addToCartBtn = productContainer.querySelector('.add-to-cart-btn');
             const quantityText = productContainer.querySelector('.quantity-text');
 
-            addToCartBtn.addEventListener('click', function() {
+            addToCartBtn.addEventListener('click', () => {
                 const quantity = parseInt(quantityText.textContent);
                 const selectedItem = {
                     name: product.name,
@@ -42,7 +49,7 @@ async function loadProducts() {
 
             let quantity = 1;
 
-            plusBtn.addEventListener('click', function() {
+            plusBtn.addEventListener('click', () => {
                 quantity++;
                 quantityText.textContent = quantity;
                 updateMainButtonVisibility();
@@ -50,7 +57,7 @@ async function loadProducts() {
                 updateItemQuantity(itemName, quantity);
             });
 
-            minusBtn.addEventListener('click', function() {
+            minusBtn.addEventListener('click', () => {
                 if (quantity > 1) {
                     quantity--;
                     quantityText.textContent = quantity;

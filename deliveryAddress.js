@@ -1,13 +1,19 @@
-document.addEventListener("DOMContentLoaded", function() {
+const jsdom = require('jsdom');
+const { JSDOM } = jsdom;
+
+const dom = new JSDOM();
+const { document } = dom.window;
+
+document.addEventListener("DOMContentLoaded", () => {
     let deliveryDetails = document.getElementById("delivery-details");
     let btnCancel = document.getElementById("btn_cancel");
     deliveryDetails.style.display = "block";
-    btnCancel.addEventListener("click", function() {
+    btnCancel.addEventListener("click", () => {
         window.location.href = "orderBasket.html";
     });
 
     let saveDataButton = document.getElementById("btn_save");
-    saveDataButton.addEventListener("click", function() {
+    saveDataButton.addEventListener("click", () => {
         let deliveryData = {
             region: document.getElementById("region-input").value,
             city: document.getElementById("city-input").value,
@@ -27,4 +33,4 @@ document.addEventListener("DOMContentLoaded", function() {
         document.getElementById("name-input").value = savedDeliveryData.name;
         document.getElementById("phone-input").value = savedDeliveryData.phone;
     }
-});   
+});

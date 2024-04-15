@@ -1,11 +1,9 @@
-let tg = global.Telegram.WebApp;
-tg.expand();
-tg.MainButton.textColor = "#FFFFFF";
-tg.MainButton.color = "#2cab37";
+const fetch = require('node-fetch');
+
 let selectedItems = [];
 
 let payButton = document.getElementById("pay-button");
-payButton.addEventListener("click", function() {
+payButton.addEventListener("click", () => {
     window.location.href = "orderBasket.html";
 });
 
@@ -20,6 +18,9 @@ function updatePayButtonVisibility() {
     }
 }
 
+const dom = new JSDOM(`<!DOCTYPE html><p>Hello world</p>`);
+const { document } = dom.window;
+
 let items = document.querySelectorAll(".item");
 items.forEach(item => {
     let quantityText = item.querySelector(".quantity-text");
@@ -28,7 +29,7 @@ items.forEach(item => {
     let addToCartBtn = item.querySelector(".add-to-cart-btn");
     let quantityContainer = item.querySelector(".quantity");
     
-    addToCartBtn.addEventListener("click", function() {
+    addToCartBtn.addEventListener("click", () => {
         quantityContainer.style.display = "inline-block";
         addToCartBtn.style.display = "none";
         let itemName = item.getAttribute("data-item");
@@ -37,7 +38,7 @@ items.forEach(item => {
         updatePayButtonVisibility();
     });
     
-    plusBtn.addEventListener("click", function() {
+    plusBtn.addEventListener("click", () => {
         let quantity = parseInt(quantityText.textContent);
         if (!isNaN(quantity)) {
             quantity++;
@@ -48,7 +49,7 @@ items.forEach(item => {
         }
     });
     
-    minusBtn.addEventListener("click", function() {
+    minusBtn.addEventListener("click", () => {
         let quantity = parseInt(quantityText.textContent);
         if (!isNaN(quantity) && quantity > 0) {
             quantity--;
