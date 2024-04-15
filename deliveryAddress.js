@@ -1,19 +1,13 @@
-const jsdom = require('jsdom');
-const { JSDOM } = jsdom;
-
-const dom = new JSDOM();
-const { document } = dom.window;
-
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", function() {
     let deliveryDetails = document.getElementById("delivery-details");
     let btnCancel = document.getElementById("btn_cancel");
     deliveryDetails.style.display = "block";
-    btnCancel.addEventListener("click", () => {
+    btnCancel.addEventListener("click", function() {
         window.location.href = "orderBasket.html";
     });
 
     let saveDataButton = document.getElementById("btn_save");
-    saveDataButton.addEventListener("click", () => {
+    saveDataButton.addEventListener("click", function() {
         let deliveryData = {
             region: document.getElementById("region-input").value,
             city: document.getElementById("city-input").value,
@@ -33,4 +27,4 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("name-input").value = savedDeliveryData.name;
         document.getElementById("phone-input").value = savedDeliveryData.phone;
     }
-});
+});   

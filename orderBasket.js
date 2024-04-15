@@ -1,21 +1,13 @@
-const fetch = require('node-fetch');
-const jsdom = require('jsdom');
-const { JSDOM } = jsdom;
-
-const dom = new JSDOM();
-const { document } = dom.window;
-
-let tg = global.Telegram.WebApp;
+let tg = window.Telegram.WebApp;
 tg.expand();
-
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", function() {
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
         document.body.classList.remove('dark-theme');
         document.body.classList.add('light-theme');
     }
 
     let editButton = document.getElementById("edit-button");
-    editButton.addEventListener("click", () => {
+    editButton.addEventListener("click", function() {
         window.location.href = "antibiotiki.html";
     });
 
@@ -23,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let basketTable = document.getElementById("basket-table");
     let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
-    cartItems.forEach((product) => {
+    cartItems.forEach(function(product) {
         let row = basketTable.insertRow(-1);
         let cell1 = row.insertCell(0);
         let cell2 = row.insertCell(1);
@@ -36,11 +28,11 @@ document.addEventListener("DOMContentLoaded", () => {
         cell4.innerHTML = `<button class="delete-button">X</button>`;
         totalPrice += product.price * product.quantity;
 
-        cell4.querySelector(".delete-button").addEventListener("click", () => {
-            let rowIndex = cell4.parentElement.rowIndex;
+        cell4.querySelector(".delete-button").addEventListener("click", function() {
+            let rowIndex = this.parentElement.parentElement.rowIndex;
             let deletedProduct = cartItems.splice(rowIndex, 1)[0];
             localStorage.setItem('cartItems', JSON.stringify(cartItems));
-            cell4.parentElement.remove();
+            this.parentElement.parentElement.remove();
             updateTotalPrice();
         });
     });
@@ -49,7 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function updateDeliverySummary() {
         let totalItems = 0;
-        cartItems.forEach((product) => {
+        cartItems.forEach(function(product) {
             totalItems += product.quantity;
         });
 
@@ -80,7 +72,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    pickupCheckbox.addEventListener("change", () => {
+    pickupCheckbox.addEventListener("change", function() {
         if (pickupCheckbox.checked) {
             deliveryAddressButton.style.display = "none";
             deliveryCheckbox.checked = false;
@@ -91,7 +83,7 @@ document.addEventListener("DOMContentLoaded", () => {
         updateDeliveryButton();
     });
 
-    deliveryCheckbox.addEventListener("change", () => {
+    deliveryCheckbox.addEventListener("change", function() {
         if (deliveryCheckbox.checked) {
             deliveryAddressButton.style.display = "flex";
             pickupCheckbox.checked = false;
@@ -102,50 +94,37 @@ document.addEventListener("DOMContentLoaded", () => {
         updateDeliveryButton();
     });
 
-    deliveryAddressButton.addEventListener("click", () => {
+    deliveryAddressButton.addEventListener("click", function() {
         window.location.href = "deliveryAddress.html";
     });
 
     let deleteButtons = document.querySelectorAll(".delete-button");
-    deleteButtons.forEach((button) => {
-        button.addEventListener("click", () => {
-            let rowIndex = button.parentElement.parentElement.rowIndex;
-            if (rowIndex >= 0 && rowIndex < cartItems.length) {
+    deleteButtons.forEach(function(button) {
+        button.addEventListener("click", function() {
+            let rowIndex = this.parentElement.parentElement.rowIndex;
+            if (rowIndex>= 0 && rowIndex < cartItems.length) {
                 let deletedProduct = cartItems[rowIndex];
-                deletedProduct.quantity--;
+                deletedProduct.quantity--; 
                 if (deletedProduct.quantity === 0) {
-                    cartItems.splice(rowIndex, 1);
+                    cartItems.splice(rowIndex, 1); 
                 }
                 localStorage.setItem('cartItems', JSON.stringify(cartItems));
-                button.parentElement.parentElement.remove();
+                this.parentElement.parentElement.remove();
                 updateTotalPrice();
             }
         });
     });
 
-    payButton.addEventListener("click", () => {
-        const orderInfo = `ПІБ: ${savedDeliveryData.name}\nОбласть: ${savedDeliveryData.region}\nМісто: ${savedDeliveryData.city}\nВідділення: ${savedDeliveryData.office}\n\nЗамовлення:\n${itemsDescription}\nЗагальна ціна: ${totalPrice} грн`;
-
-        fetch('/send-order-message', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ orderInfo: orderInfo })
-        }).then(response => {
-            if (response.ok) {
-                console.log('Order message sent successfully');
-            } else {
-                console.error('Failed to send order message');
-            }
-        }).catch(error => {
-            console.error('Error sending order message:', error);
+    payButton.addEventListener("click", function() {
+        tg.sendQuery({
+            type: "webapp",
+            payload: "send_order_info"
         });
     });
 
     function updateTotalPrice() {
         totalPrice = 0;
-        cartItems.forEach((product) => {
+        cartItems.forEach(function(product) {
             totalPrice += product.price * product.quantity;
         });
         updateDeliveryButton();
@@ -166,3 +145,21 @@ let p = document.createElement("p");
 p.innerText = `${tg.initDataUnsafe.user.first_name}
 ${tg.initDataUnsafe.user.last_name}`;
 usercard.appendChild(p);
+
+tg.onRequest = function(queryId, data) {
+    if (data === "send_order_info") {
+        let savedDeliveryData = JSON.parse(localStorage.getItem('deliveryData'));
+        let cartItems = JSON.parse(localStorage.getItem('cartItems'));
+        let itemsDescription = "";
+        let totalPrice = 0;
+
+        cartItems.forEach(function(product) {
+            itemsDescription += `${product.name}: ${product.descr}, Кількість: ${product.quantity}\n`;
+            totalPrice += product.price * product.quantity;
+        });
+
+        let message = `ПІБ: ${savedDeliveryData.name}\nОбласть: ${savedDeliveryData.region}\nМісто: ${savedDeliveryData.city}\nВідділення: ${savedDeliveryData.office}\n\nЗамовлення:\n${itemsDescription}\nЗагальна ціна: ${totalPrice} грн`;
+
+        tg.answerWebAppQuery(queryId, message);
+    }
+};
