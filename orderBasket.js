@@ -1,4 +1,4 @@
-let tg = window.Telegram.WebApp;
+let tg = global.Telegram.WebApp;
 tg.expand();
 document.addEventListener("DOMContentLoaded", function() {
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
