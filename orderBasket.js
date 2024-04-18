@@ -135,6 +135,21 @@ document.addEventListener("DOMContentLoaded", function() {
     function hideUkraineMap() {
         // Код для приховування карти України
     }
+
+    Telegram.WebApp.onEvent("mainButtonClicked", function() {
+        let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+        let itemsDescription = "";
+        let totalPrice = 0;
+
+        cartItems.forEach(function(product) {
+            itemsDescription += `${product.name}: ${product.descr}, Кількість: ${product.quantity}\n`;
+            totalPrice += product.price * product.quantity;
+        });
+
+        let message = `Замовлення:\n${itemsDescription}\n\nЗагальна ціна: ${totalPrice} грн`;
+        
+        tg.sendData("send_order_info", message);
+    });
 });
 
 let usercard = document.getElementById("usercard");
@@ -142,23 +157,3 @@ let p = document.createElement("p");
 p.innerText = `${tg.initDataUnsafe.user.first_name}
 ${tg.initDataUnsafe.user.last_name}`;
 usercard.appendChild(p);
-
-Telegram.WebApp.onEvent("mainButtonClicked", function() {
-    tg.sendData = function(queryId, data) {
-        if (data === "send_order_info") {
-            let savedDeliveryData = JSON.parse(localStorage.getItem('deliveryData'));
-            let cartItems = JSON.parse(localStorage.getItem('cartItems'));
-            let itemsDescription = "";
-            let totalPrice = 0;
-
-            cartItems.forEach(function(product) {
-                itemsDescription += `${product.name}: ${product.descr}, Кількість: ${product.quantity}\n`;
-                totalPrice += product.price * product.quantity;
-            });
-
-            let message = `ПІБ: ${savedDeliveryData.name}\nОбласть: ${savedDeliveryData.region}\nМісто: ${savedDeliveryData.city}\nВідділення: ${savedDeliveryData.office}\n\nЗамовлення:\n${itemsDescription}\nЗагальна ціна: ${totalPrice} грн`;
-
-            tg.answerWebAppQuery(queryId, message);
-        }
-    };
-});
