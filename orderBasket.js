@@ -137,12 +137,23 @@ document.addEventListener("DOMContentLoaded", function() {
         // Код для приховування карти України
     }
 
-    Telegram.WebApp.onEvent("mainButtonClicked", async function() {
-        let data = {
-            name: product.name
-        }
-        tg.sendData(JSON.stringify(data));
-        tg.close();
+    Telegram.WebApp.onEvent("mainButtonClicked", function() {
+        let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+        let orderDetails = [];
+        cartItems.forEach(function(product) {
+            orderDetails.push({
+                name: product.name,
+                description: product.descr,
+                quantity: product.quantity,
+                totalPrice: product.price * product.quantity
+            });
+        });
+        let message = {
+            type: "order_info",
+            data: orderDetails,
+            totalPrice: totalPrice
+        };
+        tg.sendData("send_order_info", message);
     });
 });
 
