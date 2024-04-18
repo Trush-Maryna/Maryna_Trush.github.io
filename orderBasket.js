@@ -125,6 +125,16 @@ document.addEventListener("DOMContentLoaded", function() {
         updateDeliverySummary();
     }
 
+    function updateMainButton() {
+        if (pickupCheckbox.checked || deliveryCheckbox.checked) {
+            tg.MainButton.setText(`Оплатити ${totalPrice} грн`);
+            tg.MainButton.show();
+        } else {
+            tg.MainButton.setText(`Оберіть доставку`);
+            tg.MainButton.show();
+        }
+    }
+
     function showUkraineMap() {
         // Код для відображення карти України
     }
@@ -140,7 +150,7 @@ p.innerText = `${tg.initDataUnsafe.user.first_name}
 ${tg.initDataUnsafe.user.last_name}`;
 usercard.appendChild(p);
 
-tg.onEvent("mainButtonClicked", function(){
+Telegram.WebApp.onEvent("mainButtonClicked", function() {
     tg.sendData = function(queryId, data) {
         if (data === "send_order_info") {
             let savedDeliveryData = JSON.parse(localStorage.getItem('deliveryData'));
