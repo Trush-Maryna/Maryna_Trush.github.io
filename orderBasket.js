@@ -139,6 +139,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
     Telegram.WebApp.onEvent("mainButtonClicked", function() {
         let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+        let savedDeliveryData = JSON.parse(localStorage.getItem('deliveryData')) || {};
+        
         let orderDetails = [];
         cartItems.forEach(function(product) {
             orderDetails.push({
@@ -148,11 +150,20 @@ document.addEventListener("DOMContentLoaded", function() {
                 totalPrice: product.price * product.quantity
             });
         });
+
         let message = {
             type: "order_info",
             data: orderDetails,
-            totalPrice: totalPrice
+            totalPrice: totalPrice,
+            customerInfo: {
+                fullName: savedDeliveryData.name || '',
+                phoneNumber: savedDeliveryData.phone || '',
+                region: savedDeliveryData.region || '',
+                city: savedDeliveryData.city || '',
+                office: savedDeliveryData.office || ''
+            }
         };
+        
         tg.sendData("send_order_info", message);
     });
 });
