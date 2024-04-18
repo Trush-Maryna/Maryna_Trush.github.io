@@ -156,6 +156,7 @@ document.addEventListener("DOMContentLoaded", function() {
             totalPrice: totalPrice
         };
         
+        console.log("Order details sent to server:", message); // Виводимо дані на консоль
         tg.sendData("send_order_info", JSON.stringify(message));
     });
 });
