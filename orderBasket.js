@@ -139,11 +139,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     Telegram.WebApp.onEvent("mainButtonClicked", async function() {
         let data = {
-            name: product.name,
-            descr: product.descr,
-            quantity: quantity,
-            price: product.price,
-            totalPrice: totalPrice
+            name: product.name
         }
         tg.sendData(JSON.stringify(data));
         tg.close();
