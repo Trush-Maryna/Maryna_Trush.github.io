@@ -1,7 +1,8 @@
 let tg = window.Telegram.WebApp;
 tg.expand();
 tg.MainButton.textColor = "#FFFFFF";
-tg.MainButton.color = "#2cab37";
+tg.MainButton.color = "rgb(91,179,208)";
+tg.MainButton.fontSize = "17px";
 let selectedItems = [];
 
 let items = document.querySelectorAll(".item");
