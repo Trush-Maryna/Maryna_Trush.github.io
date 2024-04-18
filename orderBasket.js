@@ -1,6 +1,7 @@
 let tg = window.Telegram.WebApp;
 tg.MainButton.textColor = "#FFFFFF";
-tg.MainButton.color = "#2cab37";
+tg.MainButton.color = "rgb(91,179,208)";
+tg.MainButton.fontSize = "17px";
 tg.expand();
 document.addEventListener("DOMContentLoaded", function() {
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {

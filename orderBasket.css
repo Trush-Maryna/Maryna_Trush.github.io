@@ -161,16 +161,3 @@ input[type="checkbox"]:checked {
     font-size: 15px;
     vertical-align: middle;
 }
-
-#pay-button {
-    width: 100%;
-    padding: 10px 10px;
-    border: none;
-    border-radius: 20px;
-    background: #f2f3f4;
-    color: #000;
-    font-weight: 700;
-    cursor: pointer;
-    transition: background .2s linear;
-    font-size: 17px;
-}
