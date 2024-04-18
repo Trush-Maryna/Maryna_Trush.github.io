@@ -164,7 +164,7 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         };
         
-        tg.sendData("send_order_info", message);
+        tg.sendData(JSON.stringify(message));
     });
 });
 
