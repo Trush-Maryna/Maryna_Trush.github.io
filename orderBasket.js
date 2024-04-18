@@ -65,14 +65,6 @@ document.addEventListener("DOMContentLoaded", function() {
     let deliveryCheckbox = document.getElementById("delivery-checkbox");
     let deliveryAddressButton = document.getElementById("deliveryAddress");
 
-    function updateMainButton() {
-        if (pickupCheckbox.checked || deliveryCheckbox.checked) {
-            tg.MainButton.textContent = `Оплатити ${totalPrice} грн`;
-        } else {
-            tg.MainButton.textContent = "Оберіть доставку";
-        }
-    }
-
     pickupCheckbox.addEventListener("change", function() {
         if (pickupCheckbox.checked) {
             deliveryAddressButton.style.display = "none";
