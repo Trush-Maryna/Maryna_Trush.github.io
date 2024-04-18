@@ -159,7 +159,7 @@ document.addEventListener("DOMContentLoaded", function() {
             totalPrice: totalPrice,
             customerInfo: {
                 firstName: tg.initDataUnsafe.user.first_name || '',
-                lastName: tg.initDataUnsafe.user.last_name || ''
+                lastName: tg.initDataUnsafe.user.last_name || '',
                 fullName: savedDeliveryData.name || '',
                 phoneNumber: savedDeliveryData.phone || '',
                 region: savedDeliveryData.region || '',
