@@ -142,12 +142,14 @@ document.addEventListener("DOMContentLoaded", function() {
         let savedDeliveryData = JSON.parse(localStorage.getItem('deliveryData')) || {};
         
         let orderDetails = [];
+        let totalPrice = 0;
         cartItems.forEach(function(product) {
+            let itemTotalPrice = product.price * product.quantity;
+            totalPrice += itemTotalPrice;
             orderDetails.push({
                 name: product.name,
-                description: product.descr,
                 quantity: product.quantity,
-                totalPrice: product.price * product.quantity
+                totalPrice: itemTotalPrice
             });
         });
 
