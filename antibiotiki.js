@@ -4,22 +4,6 @@ tg.MainButton.textColor = "#FFFFFF";
 tg.MainButton.color = "#2cab37";
 let selectedItems = [];
 
-let payButton = document.getElementById("pay-button");
-payButton.addEventListener("click", function() {
-    window.location.href = "orderBasket.html";
-});
-
-function updatePayButtonVisibility() {
-    let div = document.getElementById("delivery-options");
-    if (selectedItems.length > 0) {
-        payButton.style.display = "block";
-        div.style.display = "block";
-    } else {
-        payButton.style.display = "none";
-        div.style.display = "none";
-    }
-}
-
 let items = document.querySelectorAll(".item");
 items.forEach(item => {
     let quantityText = item.querySelector(".quantity-text");
@@ -34,7 +18,7 @@ items.forEach(item => {
         let itemName = item.getAttribute("data-item");
         let quantity = parseInt(quantityText.textContent);
         selectedItems.push({ name: itemName, quantity: quantity });
-        updatePayButtonVisibility();
+        updateMainButtonVisibility();
     });
     
     plusBtn.addEventListener("click", function() {
@@ -42,7 +26,7 @@ items.forEach(item => {
         if (!isNaN(quantity)) {
             quantity++;
             quantityText.textContent = quantity;
-            updatePayButtonVisibility();
+            updateMainButtonVisibility();
             let itemName = item.getAttribute("data-item");
             updateItemQuantity(itemName, quantity);
         }
@@ -53,7 +37,7 @@ items.forEach(item => {
         if (!isNaN(quantity) && quantity > 0) {
             quantity--;
             quantityText.textContent = quantity;
-            updatePayButtonVisibility();
+            updateMainButtonVisibility();
             let itemName = item.getAttribute("data-item"); 
             updateItemQuantity(itemName, quantity);
         }
@@ -67,4 +51,17 @@ items.forEach(item => {
         });
         localStorage.setItem("selectedItems", JSON.stringify(selectedItems));
     }
+
+    function updateMainButtonVisibility() {
+        if (selectedItems.length > 0) {
+            tg.MainButton.setText(`Подивитися замовлення`);
+            tg.MainButton.show();
+        }
+    }
+});
+
+Telegram.WebApp.onEvent("mainButtonClicked", function() {
+    localStorage.setItem("selectedItems", JSON.stringify(selectedItems));
+    tg.MainButton.hide();
+    window.location.href = "orderBasket.html";
 });
