@@ -138,39 +138,15 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     Telegram.WebApp.onEvent("mainButtonClicked", async function() {
-        let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
-        let orderDetails = [];
-
-        cartItems.forEach(function(product) {
-            orderDetails.push({
-                name: product.name,
-                description: product.descr,
-                quantity: product.quantity,
-                totalPrice: product.price * product.quantity
-            });
-        });
-
-        let message = {
-            type: "order_info",
-            data: orderDetails,
+        let data = {
+            name: product.name,
+            descr: product.descr,
+            quantity: quantity,
+            price: product.price,
             totalPrice: totalPrice
-        };
-        
-        console.log("Order details sent to server:", message);
-
-        try {
-            const response = await fetch('/send_order_info', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(message)
-            });
-            const data = await response.json();
-            console.log('Response from server:', data);
-        } catch (error) {
-            console.error('Error sending order data:', error);
         }
+        tg.sendData(JSON.stringify(data));
+        tg.close();
     });
 });
 
