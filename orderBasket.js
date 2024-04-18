@@ -122,6 +122,7 @@ document.addEventListener("DOMContentLoaded", function() {
         if (pickupCheckbox.checked || deliveryCheckbox.checked) {
             tg.MainButton.setText(`Оплатити ${totalPrice} грн`);
             tg.MainButton.show();
+            updateTotalPrice();
         } else {
             tg.MainButton.setText(`Оберіть доставку`);
             tg.MainButton.show();
@@ -155,7 +156,7 @@ document.addEventListener("DOMContentLoaded", function() {
             totalPrice: totalPrice
         };
         
-        tg.sendData("send_order_info", message);
+        tg.sendData("send_order_info", JSON.stringify(message));
     });
 });
 
