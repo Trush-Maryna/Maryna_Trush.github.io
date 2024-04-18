@@ -138,15 +138,22 @@ document.addEventListener("DOMContentLoaded", function() {
 
     Telegram.WebApp.onEvent("mainButtonClicked", function() {
         let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
-        let itemsDescription = "";
-        let totalPrice = 0;
+        let orderDetails = [];
 
         cartItems.forEach(function(product) {
-            itemsDescription += `${product.name}: ${product.descr}, Кількість: ${product.quantity}\n`;
-            totalPrice += product.price * product.quantity;
+            orderDetails.push({
+                name: product.name,
+                description: product.descr,
+                quantity: product.quantity,
+                totalPrice: product.price * product.quantity
+            });
         });
 
-        let message = `Замовлення:\n${itemsDescription}\n\nЗагальна ціна: ${totalPrice} грн`;
+        let message = {
+            type: "order_info",
+            data: orderDetails,
+            totalPrice: totalPrice
+        };
         
         tg.sendData("send_order_info", message);
     });
