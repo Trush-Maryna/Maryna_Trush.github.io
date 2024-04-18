@@ -1,4 +1,6 @@
 let tg = window.Telegram.WebApp;
+tg.MainButton.textColor = "#FFFFFF";
+tg.MainButton.color = "#2cab37";
 tg.expand();
 document.addEventListener("DOMContentLoaded", function() {
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
@@ -59,16 +61,15 @@ document.addEventListener("DOMContentLoaded", function() {
 
     updateDeliverySummary();
 
-    let payButton = document.getElementById("pay-button");
     let pickupCheckbox = document.getElementById("pickup-checkbox");
     let deliveryCheckbox = document.getElementById("delivery-checkbox");
     let deliveryAddressButton = document.getElementById("deliveryAddress");
 
-    function updateDeliveryButton() {
+    function updateMainButton() {
         if (pickupCheckbox.checked || deliveryCheckbox.checked) {
-            payButton.textContent = `Оплатити ${totalPrice} грн`;
+            tg.MainButton.textContent = `Оплатити ${totalPrice} грн`;
         } else {
-            payButton.textContent = "Оберіть доставку";
+            tg.MainButton.textContent = "Оберіть доставку";
         }
     }
 
@@ -80,7 +81,7 @@ document.addEventListener("DOMContentLoaded", function() {
         } else {
             deliveryAddressButton.style.display = "none";
         }
-        updateDeliveryButton();
+        updateMainButton();
     });
 
     deliveryCheckbox.addEventListener("change", function() {
@@ -91,7 +92,7 @@ document.addEventListener("DOMContentLoaded", function() {
         } else {
             deliveryAddressButton.style.display = "none";
         }
-        updateDeliveryButton();
+        updateMainButton();
     });
 
     deliveryAddressButton.addEventListener("click", function() {
@@ -115,19 +116,12 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     });
 
-    payButton.addEventListener("click", function() {
-        tg.sendQuery({
-            type: "webapp",
-            payload: "send_order_info"
-        });
-    });
-
     function updateTotalPrice() {
         totalPrice = 0;
         cartItems.forEach(function(product) {
             totalPrice += product.price * product.quantity;
         });
-        updateDeliveryButton();
+        updateMainButton();
         updateDeliverySummary();
     }
 
@@ -146,20 +140,22 @@ p.innerText = `${tg.initDataUnsafe.user.first_name}
 ${tg.initDataUnsafe.user.last_name}`;
 usercard.appendChild(p);
 
-tg.onRequest = function(queryId, data) {
-    if (data === "send_order_info") {
-        let savedDeliveryData = JSON.parse(localStorage.getItem('deliveryData'));
-        let cartItems = JSON.parse(localStorage.getItem('cartItems'));
-        let itemsDescription = "";
-        let totalPrice = 0;
+tg.onEvent("mainButtonClicked", function(){
+    tg.sendData = function(queryId, data) {
+        if (data === "send_order_info") {
+            let savedDeliveryData = JSON.parse(localStorage.getItem('deliveryData'));
+            let cartItems = JSON.parse(localStorage.getItem('cartItems'));
+            let itemsDescription = "";
+            let totalPrice = 0;
 
-        cartItems.forEach(function(product) {
-            itemsDescription += `${product.name}: ${product.descr}, Кількість: ${product.quantity}\n`;
-            totalPrice += product.price * product.quantity;
-        });
+            cartItems.forEach(function(product) {
+                itemsDescription += `${product.name}: ${product.descr}, Кількість: ${product.quantity}\n`;
+                totalPrice += product.price * product.quantity;
+            });
 
-        let message = `ПІБ: ${savedDeliveryData.name}\nОбласть: ${savedDeliveryData.region}\nМісто: ${savedDeliveryData.city}\nВідділення: ${savedDeliveryData.office}\n\nЗамовлення:\n${itemsDescription}\nЗагальна ціна: ${totalPrice} грн`;
+            let message = `ПІБ: ${savedDeliveryData.name}\nОбласть: ${savedDeliveryData.region}\nМісто: ${savedDeliveryData.city}\nВідділення: ${savedDeliveryData.office}\n\nЗамовлення:\n${itemsDescription}\nЗагальна ціна: ${totalPrice} грн`;
 
-        tg.answerWebAppQuery(queryId, message);
-    }
-};
+            tg.answerWebAppQuery(queryId, message);
+        }
+    };
+});
