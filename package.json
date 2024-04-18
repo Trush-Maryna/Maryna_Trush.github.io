@@ -1,14 +1,11 @@
 {
-  "name": "orderBasket",
+  "name": "zdorovianadolonibot",
   "version": "1.0.0",
-  "description": "orderBasket ZdoroviaNaDoloni telegram bot",
-  "main": "server.js",
+  "description": "ZdoroviaNaDoloni telegram bot",
+  "main": "index.js",
   "scripts": {
-    "start": "node server.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "dependencies": {
-    "express": "^4.17.1", 
-    "body-parser": "^1.19.0",
-    "node-telegram-bot-api": "^0.55.0" 
-  }
+  "author": "Trush Maryna",
+  "license": "ISC"
 }

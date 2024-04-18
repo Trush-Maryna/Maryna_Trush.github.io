@@ -137,7 +137,7 @@ document.addEventListener("DOMContentLoaded", function() {
         // Код для приховування карти України
     }
 
-    Telegram.WebApp.onEvent("mainButtonClicked", function() {
+    Telegram.WebApp.onEvent("mainButtonClicked", async function() {
         let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
         let orderDetails = [];
 
@@ -156,8 +156,21 @@ document.addEventListener("DOMContentLoaded", function() {
             totalPrice: totalPrice
         };
         
-        console.log("Order details sent to server:", message); // Виводимо дані на консоль
-        tg.sendData("send_order_info", JSON.stringify(message));
+        console.log("Order details sent to server:", message);
+
+        try {
+            const response = await fetch('/send_order_info', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(message)
+            });
+            const data = await response.json();
+            console.log('Response from server:', data);
+        } catch (error) {
+            console.error('Error sending order data:', error);
+        }
     });
 });
 
