@@ -29,7 +29,7 @@ async def process_medicines(callback_query: CallbackQuery):
 @dp.callback_query_handler(lambda c: c.data == 'antibiotics')
 async def process_antibiotics(callback_query: CallbackQuery):
     await bot.answer_callback_query(callback_query.id)
-    await bot.send_message(callback_query.from_user.id, "Натисніть кнопку для відкриття асортименту ліків:",
+    await bot.send_message(callback_query.from_user.id, "⬇️",
                            reply_markup=antibiotiki_app_button)
 
 

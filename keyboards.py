@@ -25,7 +25,7 @@ antibiotiki_app = WebAppInfo(url=ANTIBIOTIKI_URL)
 
 antibiotiki_app_button = ReplyKeyboardMarkup(
     keyboard=[
-        [KeyboardButton(text="Асортимент", web_app=antibiotiki_app)]
+        [KeyboardButton(text="Асортимент товарів", web_app=antibiotiki_app)]
     ],
     resize_keyboard=True
 )
