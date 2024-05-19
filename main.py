@@ -26,12 +26,65 @@ async def process_medicines(callback_query: CallbackQuery):
     await bot.answer_callback_query(callback_query.id)
     await bot.send_message(callback_query.from_user.id, "Оберіть категорію ліків:", reply_markup=medicines_keyboard)
 
+@dp.callback_query_handler(lambda c: c.data == 'vitamins')
+async def process_vitamins(callback_query: CallbackQuery):
+    await bot.answer_callback_query(callback_query.id)
+    await bot.send_message(callback_query.from_user.id, "Оберіть категорію ліків:", reply_markup=medicines_keyboard)
+
+@dp.callback_query_handler(lambda c: c.data == 'beauty')
+async def process_beauty(callback_query: CallbackQuery):
+    await bot.answer_callback_query(callback_query.id)
+    await bot.send_message(callback_query.from_user.id, "Оберіть категорію ліків:", reply_markup=medicines_keyboard)
+
+@dp.callback_query_handler(lambda c: c.data == 'children')
+async def process_children(callback_query: CallbackQuery):
+    await bot.answer_callback_query(callback_query.id)
+    await bot.send_message(callback_query.from_user.id, "Оберіть категорію ліків:", reply_markup=medicines_keyboard)
+
+@dp.callback_query_handler(lambda c: c.data == 'sport')
+async def process_sport(callback_query: CallbackQuery):
+    await bot.answer_callback_query(callback_query.id)
+    await bot.send_message(callback_query.from_user.id, "Оберіть категорію ліків:", reply_markup=medicines_keyboard)
+
+@dp.callback_query_handler(lambda c: c.data == 'medical_equipment')
+async def process_medical_equipment(callback_query: CallbackQuery):
+    await bot.answer_callback_query(callback_query.id)
+    await bot.send_message(callback_query.from_user.id, "Оберіть категорію ліків:", reply_markup=medicines_keyboard)
+
+@dp.callback_query_handler(lambda c: c.data == 'miscellaneous')
+async def process_miscellaneous(callback_query: CallbackQuery):
+    await bot.answer_callback_query(callback_query.id)
+    await bot.send_message(callback_query.from_user.id, "Оберіть категорію ліків:", reply_markup=medicines_keyboard)
+
 @dp.callback_query_handler(lambda c: c.data == 'antibiotics')
 async def process_antibiotics(callback_query: CallbackQuery):
     await bot.answer_callback_query(callback_query.id)
-    await bot.send_message(callback_query.from_user.id, "⬇️",
-                           reply_markup=antibiotiki_app_button)
+    await bot.send_message(callback_query.from_user.id, "⬇️", reply_markup=antibiotiki_app_button)
 
+@dp.callback_query_handler(lambda c: c.data == 'cold_medicines')
+async def process_cold_medicines(callback_query: CallbackQuery):
+    await bot.answer_callback_query(callback_query.id)
+    await bot.send_message(callback_query.from_user.id, "⬇️", reply_markup=antibiotiki_app_button)
+
+@dp.callback_query_handler(lambda c: c.data == 'pain_relief')
+async def process_pain_relief(callback_query: CallbackQuery):
+    await bot.answer_callback_query(callback_query.id)
+    await bot.send_message(callback_query.from_user.id, "⬇️", reply_markup=antibiotiki_app_button)
+
+@dp.callback_query_handler(lambda c: c.data == 'stomach_medicines')
+async def process_stomach_medicines(callback_query: CallbackQuery):
+    await bot.answer_callback_query(callback_query.id)
+    await bot.send_message(callback_query.from_user.id, "⬇️", reply_markup=antibiotiki_app_button)
+
+@dp.callback_query_handler(lambda c: c.data == 'allergy_medicines')
+async def process_allergy_medicines(callback_query: CallbackQuery):
+    await bot.answer_callback_query(callback_query.id)
+    await bot.send_message(callback_query.from_user.id, "⬇️", reply_markup=antibiotiki_app_button)
+
+@dp.callback_query_handler(lambda c: c.data == 'heart_medicines')
+async def process_heart_medicines(callback_query: CallbackQuery):
+    await bot.answer_callback_query(callback_query.id)
+    await bot.send_message(callback_query.from_user.id, "⬇️", reply_markup=antibiotiki_app_button)
 
 @dp.message_handler(content_types=ContentType.WEB_APP_DATA)
 async def process_web_app_data(message: Message):
