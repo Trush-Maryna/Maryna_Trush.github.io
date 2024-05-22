@@ -4,9 +4,12 @@ tg.MainButton.color = "rgb(91,179,208)";
 tg.MainButton.fontSize = "17px";
 tg.expand();
 
+let pickupButton = tg.MainButton;
+let deliveryButton = tg.MainButton.clone();
+
 document.addEventListener("DOMContentLoaded", function() {
-    tg.MainButton.setText("Оберіть доставку");
-    tg.MainButton.show();
+    pickupButton.setText("Оберіть доставку");
+    pickupButton.show();
 
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
         document.body.classList.remove('dark-theme');
@@ -77,13 +80,12 @@ document.addEventListener("DOMContentLoaded", function() {
             deliveryCheckbox.checked = false;
             mapContainer.style.display = "block";
             showUkraineMap();
-            tg.MainButton.setText("Оберіть аптеку");
-            tg.MainButton.show();
+            pickupButton.setText("Оберіть аптеку");
+            pickupButton.show();
         } else {
             mapContainer.style.display = "none";
             deliveryAddressButton.style.display = "none";
-            tg.MainButton.setText("Оберіть доставку");
-            tg.MainButton.show();
+            pickupButton.hide();
         }
     });
 
@@ -93,11 +95,12 @@ document.addEventListener("DOMContentLoaded", function() {
             pickupCheckbox.checked = false;
             mapContainer.style.display = "none";
             hideUkraineMap();
+            deliveryButton.setText(`Оплатити ${totalPrice} грн`);
+            deliveryButton.show();
         } else {
             deliveryAddressButton.style.display = "none";
-            tg.MainButton.hide();
+            deliveryButton.hide();
         }
-        updateMainButton();
     });
 
     deliveryAddressButton.addEventListener("click", function() {
@@ -126,21 +129,22 @@ document.addEventListener("DOMContentLoaded", function() {
         cartItems.forEach(function(product) {
             totalPrice += product.price * product.quantity;
         });
-        updateMainButton();
+        updateMainButtons();
         updateDeliverySummary();
     }
 
-    function updateMainButton() {
+    function updateMainButtons() {
         if (pickupCheckbox.checked) {
             if (selectedPharmacyInfo) {
-                tg.MainButton.setText(`Забронювати з ${selectedPharmacyInfo}`);
+                pickupButton.setText(`Забронювати з ${selectedPharmacyInfo}`);
             } else {
-                tg.MainButton.setText("Оберіть аптеку");
+                pickupButton.setText("Оберіть аптеку");
             }
+            pickupButton.show();
         } else if (deliveryCheckbox.checked) {
-            tg.MainButton.setText(`Оплатити ${totalPrice} грн`);
+            deliveryButton.setText(`Оплатити ${totalPrice} грн`);
+            deliveryButton.show();
         }
-        tg.MainButton.show();
     }
 
     function sendPharmacySelectionData(pharmacy) {
@@ -190,8 +194,8 @@ document.addEventListener("DOMContentLoaded", function() {
         
             marker.on('click', function() {
                 selectedPharmacyInfo = pharmacy.Information;
-                tg.MainButton.setText(`Забронювати з ${pharmacy.Name}`);
-                tg.MainButton.show();
+                pickupButton.setText(`Забронювати з ${pharmacy.Name}`);
+                pickupButton.show();
                 sendPharmacySelectionData(pharmacy);
             });
         });
