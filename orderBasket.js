@@ -130,7 +130,7 @@ document.addEventListener("DOMContentLoaded", function() {
         updateDeliverySummary();
     }
 
-    function updateMainButton() {
+    async function updateMainButton() {
         if (pickupCheckbox.checked) {
             if (selectedPharmacyInfo) {
                 tg.MainButton.setText(`Забронювати з ${selectedPharmacyInfo}`);
@@ -230,10 +230,9 @@ document.addEventListener("DOMContentLoaded", function() {
         };
     }
 
-    ttg.WebApp.onEvent("mainButtonClicked", function() {
-        let orderData = gatherOrderDetails();
-
+    tg.WebApp.onEvent("mainButtonClicked", function() {
         if (deliveryCheckbox.checked) {
+            let orderData = gatherOrderDetails();
             let message = {
                 type: "order_info",
                 data: orderData.orderDetails,
@@ -243,6 +242,19 @@ document.addEventListener("DOMContentLoaded", function() {
             tg.sendData(JSON.stringify(message));
         } else if (pickupCheckbox.checked && selectedPharmacyInfo) {
             sendPharmacySelectionData(selectedPharmacyInfo);
+        }
+    });
+
+    tg.MainButton.on('click', async function() {
+        if (deliveryCheckbox.checked) {
+            let orderData = gatherOrderDetails();
+            let message = {
+                type: "order_info",
+                data: orderData.orderDetails,
+                totalPrice: orderData.totalPrice,
+                customerInfo: orderData.customerInfo
+            };
+            tg.sendData(JSON.stringify(message));
         }
     });
 
