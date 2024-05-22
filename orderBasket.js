@@ -201,27 +201,55 @@ document.addEventListener("DOMContentLoaded", function() {
         mapContainer.innerHTML = "";
     }
 
-    tg.WebApp.onEvent("mainButtonClicked", function() {
-        if (pickupCheckbox.checked && selectedPharmacyInfo) {
-            sendPharmacySelectionData(selectedPharmacyInfo);
-        }
-        else if (deliveryCheckbox.checked) {
-            let savedDeliveryData = JSON.parse(localStorage.getItem('deliveryData')) || {};
+    function gatherOrderDetails() {
+        let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+        let savedDeliveryData = JSON.parse(localStorage.getItem('deliveryData')) || {};
+        let orderDetails = [];
+        let totalPrice = 0;
 
+        cartItems.forEach(function(product) {
+            let itemTotalPrice = product.price * product.quantity;
+            totalPrice += itemTotalPrice;
+            orderDetails.push({
+                name: product.name,
+                quantity: product.quantity,
+                totalPrice: itemTotalPrice
+            });
+        });
+
+        return {
+            orderDetails: orderDetails,
+            totalPrice: totalPrice,
+            customerInfo: {
+                fullName: savedDeliveryData.name || '',
+                phoneNumber: savedDeliveryData.phone || '',
+                region: savedDeliveryData.region || '',
+                city: savedDeliveryData.city || '',
+                office: savedDeliveryData.office || ''
+            }
+        };
+    }
+
+    tg.WebApp.onEvent("mainButtonClicked", function() {
+        console.log("Main button clicked");
+
+        let orderData = gatherOrderDetails();
+        console.log("Order Data:", orderData);
+
+        if (deliveryCheckbox.checked) {
             let message = {
                 type: "order_info",
-                data: cartItems,
-                totalPrice: totalPrice,
-                customerInfo: {
-                    fullName: savedDeliveryData.name || '',
-                    phoneNumber: savedDeliveryData.phone || '',
-                    region: savedDeliveryData.region || '',
-                    city: savedDeliveryData.city || '',
-                    office: savedDeliveryData.office || ''
-                }
+                data: orderData.orderDetails,
+                totalPrice: orderData.totalPrice,
+                customerInfo: orderData.customerInfo
             };
-            
+
+            console.log("Sending data:", message);
             tg.sendData(JSON.stringify(message));
+        }
+        else if (pickupCheckbox.checked && selectedPharmacyInfo) {
+            console.log("Selected pharmacy info:", selectedPharmacyInfo);
+            sendPharmacySelectionData(selectedPharmacyInfo);
         }
     });
 });
