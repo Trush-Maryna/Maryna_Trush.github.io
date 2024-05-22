@@ -4,9 +4,6 @@ tg.MainButton.color = "rgb(91,179,208)";
 tg.MainButton.fontSize = "17px";
 tg.expand();
 
-let pickupMainButton = tg.MainButton;
-let deliveryMainButton = new tg.MainButton();
-
 document.addEventListener("DOMContentLoaded", function() {
     tg.MainButton.setText("Оберіть доставку");
     tg.MainButton.show();
@@ -45,7 +42,7 @@ document.addEventListener("DOMContentLoaded", function() {
             updateTotalPrice();
         });
     });
-
+    document.getElementById("totalPrice").innerText = totalPrice;
     let deliverySummary = document.getElementById("delivery-summary");
 
     function updateDeliverySummary() {
@@ -80,13 +77,13 @@ document.addEventListener("DOMContentLoaded", function() {
             deliveryCheckbox.checked = false;
             mapContainer.style.display = "block";
             showUkraineMap();
-            pickupMainButton.setText("Оберіть аптеку");
-            pickupMainButton.show();
-            deliveryMainButton.hide();
+            tg.MainButton.setText("Оберіть аптеку");
+            tg.MainButton.show();
         } else {
             mapContainer.style.display = "none";
             deliveryAddressButton.style.display = "none";
-            pickupMainButton.hide();
+            tg.MainButton.setText("Оберіть доставку");
+            tg.MainButton.show();
         }
     });
 
@@ -96,13 +93,11 @@ document.addEventListener("DOMContentLoaded", function() {
             pickupCheckbox.checked = false;
             mapContainer.style.display = "none";
             hideUkraineMap();
-            deliveryMainButton.setText(`Оплатити ${totalPrice} грн`);
-            deliveryMainButton.show();
-            pickupMainButton.hide();
         } else {
             deliveryAddressButton.style.display = "none";
-            deliveryMainButton.hide();
+            tg.MainButton.hide();
         }
+        updateMainButton();
     });
 
     deliveryAddressButton.addEventListener("click", function() {
@@ -138,15 +133,14 @@ document.addEventListener("DOMContentLoaded", function() {
     function updateMainButton() {
         if (pickupCheckbox.checked) {
             if (selectedPharmacyInfo) {
-                pickupMainButton.setText(`Забронювати з ${selectedPharmacyInfo}`);
+                tg.MainButton.setText(`Забронювати з ${selectedPharmacyInfo}`);
             } else {
-                pickupMainButton.setText("Оберіть аптеку");
+                tg.MainButton.setText("Оберіть аптеку");
             }
-            pickupMainButton.show();
         } else if (deliveryCheckbox.checked) {
-            deliveryMainButton.setText(`Оплатити ${totalPrice} грн`);
-            deliveryMainButton.show();
+            tg.MainButton.setText(`Оплатити ${totalPrice} грн`);
         }
+        tg.MainButton.show();
     }
 
     function sendPharmacySelectionData(pharmacy) {
@@ -196,8 +190,8 @@ document.addEventListener("DOMContentLoaded", function() {
         
             marker.on('click', function() {
                 selectedPharmacyInfo = pharmacy.Information;
-                pickupMainButton.setText(`Забронювати з ${pharmacy.Name}`);
-                pickupMainButton.show();
+                tg.MainButton.setText(`Забронювати з ${pharmacy.Name}`);
+                tg.MainButton.show();
                 sendPharmacySelectionData(pharmacy);
             });
         });
@@ -236,7 +230,7 @@ document.addEventListener("DOMContentLoaded", function() {
         };
     }
 
-    tg.WebApp.onEvent("mainButtonClicked", function() {
+    ttg.WebApp.onEvent("mainButtonClicked", function() {
         let orderData = gatherOrderDetails();
 
         if (deliveryCheckbox.checked) {
@@ -247,9 +241,19 @@ document.addEventListener("DOMContentLoaded", function() {
                 customerInfo: orderData.customerInfo
             };
             tg.sendData(JSON.stringify(message));
-        }
-        else if (pickupCheckbox.checked && selectedPharmacyInfo) {
+        } else if (pickupCheckbox.checked && selectedPharmacyInfo) {
             sendPharmacySelectionData(selectedPharmacyInfo);
         }
+    });
+
+    document.getElementById("payButton").addEventListener("click", function() {
+        let orderData = gatherOrderDetails();
+        let message = {
+            type: "order_info",
+            data: orderData.orderDetails,
+            totalPrice: orderData.totalPrice,
+            customerInfo: orderData.customerInfo
+        };
+        tg.sendData(JSON.stringify(message));
     });
 });

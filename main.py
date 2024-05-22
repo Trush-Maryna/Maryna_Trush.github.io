@@ -90,13 +90,11 @@ async def process_heart_medicines(callback_query: CallbackQuery):
 async def process_web_app_data(message: Message):
     try:
         data = json.loads(message.web_app_data.data)
-        print(f"Received data: {data}")
         if data['type'] == 'order_info':
             await handle_order_info(data, message)
         elif data['type'] == 'pickup_order':
             await handle_pickup_order(data, message)
     except Exception as e:
-        print(f"Error processing web app data: {e}")
         await message.answer("Сталася помилка при обробці даних.")
 
 async def handle_order_info(data, message):
@@ -129,8 +127,7 @@ async def handle_order_info(data, message):
         response_message += f"Відділення НП: {customer_info['office']}\n"
         await bot.send_message(channel_id, response_message)
     except Exception as e:
-        print(f"Error handling order info: {e}")
-        await message.answer("Сталася помилка при обробці замовлення.") 
+        await message.answer("Сталася помилка при обробці замовлення.")
 
 async def handle_pickup_order(data, message):
     try:
@@ -150,7 +147,6 @@ async def handle_pickup_order(data, message):
         admin_message = f"На аптеку {pharmacy_name} заброньовано товари: \n{ordered_items}.\n\nЗагальна ціна: {total_price} грн.\n\nДеталі аптеки: \n{pharmacy_details}."
         await bot.send_message(channel_id, admin_message)
     except Exception as e:
-        print(f"Error handling pickup order: {e}")
         await message.answer("Сталася помилка при обробці бронювання.")
 
 if __name__ == '__main__':
