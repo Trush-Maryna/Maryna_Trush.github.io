@@ -15,8 +15,13 @@ document.addEventListener("DOMContentLoaded", function() {
             name: document.getElementById("name-input").value,
             phone: document.getElementById("phone-input").value
         };
-        localStorage.setItem('deliveryData', JSON.stringify(deliveryData));
-        window.location.href = "orderBasket.html";
+
+        if (deliveryData.region && deliveryData.city && deliveryData.office && deliveryData.name && deliveryData.phone) {
+            localStorage.setItem('deliveryData', JSON.stringify(deliveryData));
+            window.location.href = "orderBasket.html";
+        } else {
+            alert("Будь ласка, заповніть усі поля.");
+        }
     });
 
     let savedDeliveryData = JSON.parse(localStorage.getItem('deliveryData'));
@@ -27,4 +32,4 @@ document.addEventListener("DOMContentLoaded", function() {
         document.getElementById("name-input").value = savedDeliveryData.name;
         document.getElementById("phone-input").value = savedDeliveryData.phone;
     }
-});   
+});
