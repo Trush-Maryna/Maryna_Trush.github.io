@@ -96,12 +96,12 @@ document.addEventListener("DOMContentLoaded", function() {
             mapContainer.style.display = "none";
             hideUkraineMap();
             sendDeliveryDataFlag = true;
-            updateMainButton();
         } else {
             deliveryAddressButton.style.display = "none";
             sendDeliveryDataFlag = false;
             tg.MainButton.hide();
         }
+        updateMainButton();
     });
 
     deliveryAddressButton.addEventListener("click", function() {
@@ -143,7 +143,6 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         } else if (deliveryCheckbox.checked) {
             tg.MainButton.setText(`Оплатити ${totalPrice} грн`);
-            tg.MainButton.show();
         }
         tg.MainButton.show();
     }
