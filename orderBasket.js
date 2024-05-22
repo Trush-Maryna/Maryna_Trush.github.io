@@ -142,7 +142,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 tg.MainButton.setText("Оберіть аптеку");
             }
         } else if (deliveryCheckbox.checked) {
-            tg.MainButton.setText("Оплатити ${totalPrice} грн");
+            tg.MainButton.setText(`Оплатити ${totalPrice} грн`);
             tg.MainButton.show();
         }
         tg.MainButton.show();
@@ -240,11 +240,10 @@ document.addEventListener("DOMContentLoaded", function() {
     tg.WebApp.onEvent("mainButtonClicked", function() {
         if (pickupCheckbox.checked && selectedPharmacyInfo) {
             sendPharmacySelectionData(selectedPharmacyInfo);
-        } else if (deliveryCheckbox.checked){
-            sendDeliveryData();
-        }
-        if (sendDeliveryDataFlag) {
-            sendDeliveryData();
+        } else if (deliveryCheckbox.checked) {
+            if (sendDeliveryDataFlag) {
+                sendDeliveryData();
+            }
         }
     });
 });
