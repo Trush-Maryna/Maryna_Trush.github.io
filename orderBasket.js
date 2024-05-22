@@ -4,12 +4,9 @@ tg.MainButton.color = "rgb(91,179,208)";
 tg.MainButton.fontSize = "17px";
 tg.expand();
 
-let pickupButton = tg.MainButton;
-let deliveryButton = tg.MainButton.clone();
-
 document.addEventListener("DOMContentLoaded", function() {
-    pickupButton.setText("Оберіть доставку");
-    pickupButton.show();
+    tg.MainButton.setText("Оберіть доставку");
+    tg.MainButton.show();
 
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
         document.body.classList.remove('dark-theme');
@@ -80,12 +77,13 @@ document.addEventListener("DOMContentLoaded", function() {
             deliveryCheckbox.checked = false;
             mapContainer.style.display = "block";
             showUkraineMap();
-            pickupButton.setText("Оберіть аптеку");
-            pickupButton.show();
+            tg.MainButton.setText("Оберіть аптеку");
+            tg.MainButton.show();
         } else {
             mapContainer.style.display = "none";
             deliveryAddressButton.style.display = "none";
-            pickupButton.hide();
+            tg.MainButton.setText("Оберіть доставку");
+            tg.MainButton.show();
         }
     });
 
@@ -95,12 +93,11 @@ document.addEventListener("DOMContentLoaded", function() {
             pickupCheckbox.checked = false;
             mapContainer.style.display = "none";
             hideUkraineMap();
-            deliveryButton.setText(`Оплатити ${totalPrice} грн`);
-            deliveryButton.show();
         } else {
             deliveryAddressButton.style.display = "none";
-            deliveryButton.hide();
+            tg.MainButton.hide();
         }
+        updateMainButton();
     });
 
     deliveryAddressButton.addEventListener("click", function() {
@@ -129,22 +126,21 @@ document.addEventListener("DOMContentLoaded", function() {
         cartItems.forEach(function(product) {
             totalPrice += product.price * product.quantity;
         });
-        updateMainButtons();
+        updateMainButton();
         updateDeliverySummary();
     }
 
-    function updateMainButtons() {
+    function updateMainButton() {
         if (pickupCheckbox.checked) {
             if (selectedPharmacyInfo) {
-                pickupButton.setText(`Забронювати з ${selectedPharmacyInfo}`);
+                tg.MainButton.setText(`Забронювати з ${selectedPharmacyInfo}`);
             } else {
-                pickupButton.setText("Оберіть аптеку");
+                tg.MainButton.setText("Оберіть аптеку");
             }
-            pickupButton.show();
         } else if (deliveryCheckbox.checked) {
-            deliveryButton.setText(`Оплатити ${totalPrice} грн`);
-            deliveryButton.show();
+            tg.MainButton.setText(`Оплатити ${totalPrice} грн`);
         }
+        tg.MainButton.show();
     }
 
     function sendPharmacySelectionData(pharmacy) {
@@ -194,8 +190,8 @@ document.addEventListener("DOMContentLoaded", function() {
         
             marker.on('click', function() {
                 selectedPharmacyInfo = pharmacy.Information;
-                pickupButton.setText(`Забронювати з ${pharmacy.Name}`);
-                pickupButton.show();
+                tg.MainButton.setText(`Забронювати з ${pharmacy.Name}`);
+                tg.MainButton.show();
                 sendPharmacySelectionData(pharmacy);
             });
         });
@@ -237,23 +233,34 @@ document.addEventListener("DOMContentLoaded", function() {
     tg.WebApp.onEvent("mainButtonClicked", function() {
         console.log("Main button clicked");
 
-        let orderData = gatherOrderDetails();
-        console.log("Order Data:", orderData);
+        if (pickupCheckbox.checked) {
+            let orderData = gatherOrderDetails();
+            console.log("Order Data:", orderData);
 
-        if (deliveryCheckbox.checked) {
             let message = {
-                type: "order_info",
+                type: "pickup_order",
                 data: orderData.orderDetails,
                 totalPrice: orderData.totalPrice,
                 customerInfo: orderData.customerInfo
             };
 
-            console.log("Sending data:", message);
+            console.log("Sending pickup data:", message);
             tg.sendData(JSON.stringify(message));
         }
-        else if (pickupCheckbox.checked && selectedPharmacyInfo) {
-            console.log("Selected pharmacy info:", selectedPharmacyInfo);
-            sendPharmacySelectionData(selectedPharmacyInfo);
+
+        if (deliveryCheckbox.checked) {
+            let orderData = gatherOrderDetails();
+            console.log("Order Data:", orderData);
+
+            let message = {
+                type: "delivery_order",
+                data: orderData.orderDetails,
+                totalPrice: orderData.totalPrice,
+                customerInfo: orderData.customerInfo
+            };
+
+            console.log("Sending delivery data:", message);
+            tg.sendData(JSON.stringify(message));
         }
     });
 });
