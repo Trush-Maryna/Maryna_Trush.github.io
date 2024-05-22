@@ -19,6 +19,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     let totalPrice = 0;
+
     let basketTable = document.getElementById("basket-table");
     let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
     cartItems.forEach(function(product) {
@@ -95,12 +96,12 @@ document.addEventListener("DOMContentLoaded", function() {
             mapContainer.style.display = "none";
             hideUkraineMap();
             sendDeliveryDataFlag = true;
+            updateMainButton();
         } else {
             deliveryAddressButton.style.display = "none";
             sendDeliveryDataFlag = false;
             tg.MainButton.hide();
         }
-        updateMainButton();
     });
 
     deliveryAddressButton.addEventListener("click", function() {
@@ -141,7 +142,8 @@ document.addEventListener("DOMContentLoaded", function() {
                 tg.MainButton.setText("Оберіть аптеку");
             }
         } else if (deliveryCheckbox.checked) {
-            tg.MainButton.setText(`Оплатити ${totalPrice} грн`);
+            tg.MainButton.setText("Оплатити ${totalPrice} грн");
+            tg.MainButton.show();
         }
         tg.MainButton.show();
     }
@@ -238,7 +240,10 @@ document.addEventListener("DOMContentLoaded", function() {
     tg.WebApp.onEvent("mainButtonClicked", function() {
         if (pickupCheckbox.checked && selectedPharmacyInfo) {
             sendPharmacySelectionData(selectedPharmacyInfo);
-        } else if (deliveryCheckbox.checked && sendDeliveryDataFlag) {
+        } else if (deliveryCheckbox.checked){
+            sendDeliveryData();
+        }
+        if (sendDeliveryDataFlag) {
             sendDeliveryData();
         }
     });
