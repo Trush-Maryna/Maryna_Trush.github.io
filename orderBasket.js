@@ -3,6 +3,7 @@ tg.MainButton.textColor = "#FFFFFF";
 tg.MainButton.color = "rgb(91,179,208)";
 tg.MainButton.fontSize = "17px";
 tg.expand();
+
 document.addEventListener("DOMContentLoaded", function() {
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
         document.body.classList.remove('dark-theme');
@@ -66,6 +67,7 @@ document.addEventListener("DOMContentLoaded", function() {
     let deliveryCheckbox = document.getElementById("delivery-checkbox");
     let deliveryAddressButton = document.getElementById("deliveryAddress");
     let mapContainer = document.getElementById("map");
+    let selectedPharmacyInfo = null;
 
     pickupCheckbox.addEventListener("change", function() {
         if (pickupCheckbox.checked) {
@@ -101,9 +103,9 @@ document.addEventListener("DOMContentLoaded", function() {
             let rowIndex = this.parentElement.parentElement.rowIndex;
             if (rowIndex>= 0 && rowIndex < cartItems.length) {
                 let deletedProduct = cartItems[rowIndex];
-                deletedProduct.quantity--;
+                deletedProduct.quantity--; 
                 if (deletedProduct.quantity === 0) {
-                    cartItems.splice(rowIndex, 1);
+                    cartItems.splice(rowIndex, 1); 
                 }
                 localStorage.setItem('cartItems', JSON.stringify(cartItems));
                 this.parentElement.parentElement.remove();
@@ -163,9 +165,8 @@ document.addEventListener("DOMContentLoaded", function() {
             var marker = L.marker([pharmacy.lat, pharmacy.lng]).addTo(map).bindPopup(pharmacy.info);
 
             marker.on('click', function() {
-                Telegram.WebApp.onEvent('mainButtonClicked', function() {
-                Telegram.WebApp.sendData(pharmacy.info);
-                });
+                selectedPharmacyInfo = pharmacy.info;
+                updateMainButton();
             });
         });
     }
@@ -177,7 +178,7 @@ document.addEventListener("DOMContentLoaded", function() {
     Telegram.WebApp.onEvent("mainButtonClicked", function() {
         let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
         let savedDeliveryData = JSON.parse(localStorage.getItem('deliveryData')) || {};
-        
+                
         let orderDetails = [];
         let totalPrice = 0;
         cartItems.forEach(function(product) {
@@ -202,9 +203,19 @@ document.addEventListener("DOMContentLoaded", function() {
                 office: savedDeliveryData.office || ''
             }
         };
-        
+                
         tg.sendData(JSON.stringify(message));
     });
+
+    function updateMainButton() {
+        if (selectedPharmacyInfo) {
+            tg.MainButton.setText(`Замовити з ${selectedPharmacyInfo}`);
+            tg.MainButton.show();
+        } else {
+            tg.MainButton.setText(`Оберіть аптеку`);
+            tg.MainButton.show();
+        }
+    }            
 });
 
 let usercard = document.getElementById("usercard");
