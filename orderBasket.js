@@ -240,10 +240,8 @@ document.addEventListener("DOMContentLoaded", function() {
     tg.WebApp.onEvent("mainButtonClicked", function() {
         if (pickupCheckbox.checked && selectedPharmacyInfo) {
             sendPharmacySelectionData(selectedPharmacyInfo);
-        } else if (deliveryCheckbox.checked) {
-            if (sendDeliveryDataFlag) {
-                sendDeliveryData();
-            }
+        } else if (deliveryCheckbox.checked && sendDeliveryDataFlag) {
+            sendDeliveryData();
         }
     });
 });
