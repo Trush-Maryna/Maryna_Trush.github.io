@@ -128,15 +128,20 @@ async def handle_pickup_order(data, message):
     order_details = data['data']
     total_price = data['totalPrice']
 
-    ordered_items = [item['name'] for item in order_details]
+    ordered_names = [item['name'] for item in order_details]
+    ordered_quantity = [item['quantity'] for item in order_details]
+    ordered_price = [item['totalPrice'] for item in order_details]
+
     pharmacy_name = pharmacy_info['name']
     pharmacy_details = pharmacy_info['info']
 
-    user_message = f"Ви забронювали товари: \n{', '.join(ordered_items)}.\n\nЗагальна ціна: {total_price}грн.\nНа аптеку: {pharmacy_name}.\nІнформація про аптеку: \n{pharmacy_details}.\nДякуємо!"
+    user_message = (f"Ви забронювали товари: \n"
+                    f"{', '.join(ordered_names).join(ordered_quantity).join(ordered_price)}."
+                    f"\n\nЗагальна ціна: {total_price}грн.\n\nНа аптеку: {pharmacy_name}.\nІнформація про аптеку: \n{pharmacy_details}.\nДякуємо!")
     await bot.send_message(message.from_user.id, user_message)
 
     channel_id = CHANNEL_ID
-    admin_message = f"На аптеку {pharmacy_name} заброньовано товари: \n{', '.join(ordered_items)}.\n\nЗагальна ціна: {total_price}грн.\n\nДеталі аптеки: \n{pharmacy_details}."
+    admin_message = f"На аптеку {pharmacy_name} заброньовано товари: \n{', '.join(ordered_names).join(ordered_quantity).join(ordered_price)}.\n\nЗагальна ціна: {total_price}грн.\n\nДеталі аптеки: \n{pharmacy_details}."
     await bot.send_message(channel_id, admin_message)
 
 if __name__ == '__main__':

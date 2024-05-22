@@ -64,8 +64,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     updateDeliverySummary();
-
-    let sendDeliveryDataFlag = false;
+    
     let pickupCheckbox = document.getElementById("pickup-checkbox");
     let deliveryCheckbox = document.getElementById("delivery-checkbox");
     let deliveryAddressButton = document.getElementById("deliveryAddress");
@@ -94,10 +93,8 @@ document.addEventListener("DOMContentLoaded", function() {
             pickupCheckbox.checked = false;
             mapContainer.style.display = "none";
             hideUkraineMap();
-            sendDeliveryDataFlag = true;
         } else {
             deliveryAddressButton.style.display = "none";
-            sendDeliveryDataFlag = false;
             tg.MainButton.hide();
         }
         updateMainButton();
@@ -200,37 +197,6 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
-    function sendDeliveryData() {
-        let savedDeliveryData = JSON.parse(localStorage.getItem('deliveryData')) || {};
-
-        let orderDetails = [];
-        let totalPrice = 0;
-        cartItems.forEach(function(product) {
-            let itemTotalPrice = product.price * product.quantity;
-            totalPrice += itemTotalPrice;
-            orderDetails.push({
-                name: product.name,
-                quantity: product.quantity,
-                totalPrice: itemTotalPrice
-            });
-        });
-
-        let message = {
-            type: "order_info",
-            data: orderDetails,
-            totalPrice: totalPrice,
-            customerInfo: {
-                fullName: savedDeliveryData.name || '',
-                phoneNumber: savedDeliveryData.phone || '',
-                region: savedDeliveryData.region || '',
-                city: savedDeliveryData.city || '',
-                office: savedDeliveryData.office || ''
-            }
-        };
-
-        tg.sendData(JSON.stringify(message));
-    }
-
     function hideUkraineMap() {
         mapContainer.innerHTML = "";
     }
@@ -238,8 +204,37 @@ document.addEventListener("DOMContentLoaded", function() {
     tg.WebApp.onEvent("mainButtonClicked", function() {
         if (pickupCheckbox.checked && selectedPharmacyInfo) {
             sendPharmacySelectionData(selectedPharmacyInfo);
-        } else if (deliveryCheckbox.checked && sendDeliveryDataFlag) {
-            sendDeliveryData();
+        }
+        else{
+            let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+            let savedDeliveryData = JSON.parse(localStorage.getItem('deliveryData')) || {};
+            
+            let orderDetails = [];
+            let totalPrice = 0;
+            cartItems.forEach(function(product) {
+                let itemTotalPrice = product.price * product.quantity;
+                totalPrice += itemTotalPrice;
+                orderDetails.push({
+                    name: product.name,
+                    quantity: product.quantity,
+                    totalPrice: itemTotalPrice
+                });
+            });
+
+            let message = {
+                type: "order_info",
+                data: orderDetails,
+                totalPrice: totalPrice,
+                customerInfo: {
+                    fullName: savedDeliveryData.name || '',
+                    phoneNumber: savedDeliveryData.phone || '',
+                    region: savedDeliveryData.region || '',
+                    city: savedDeliveryData.city || '',
+                    office: savedDeliveryData.office || ''
+                }
+            };
+            
+            tg.sendData(JSON.stringify(message));
         }
     });
 });
