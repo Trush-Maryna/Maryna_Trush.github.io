@@ -205,25 +205,12 @@ document.addEventListener("DOMContentLoaded", function() {
         if (pickupCheckbox.checked && selectedPharmacyInfo) {
             sendPharmacySelectionData(selectedPharmacyInfo);
         }
-        else {
-            let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+        else if (deliveryCheckbox.checked) {
             let savedDeliveryData = JSON.parse(localStorage.getItem('deliveryData')) || {};
-
-            let orderDetails = [];
-            totalPrice = 0;
-            cartItems.forEach(function(product) {
-                let itemTotalPrice = product.price * product.quantity;
-                totalPrice += itemTotalPrice;
-                orderDetails.push({
-                    name: product.name,
-                    quantity: product.quantity,
-                    totalPrice: itemTotalPrice
-                });
-            });
 
             let message = {
                 type: "order_info",
-                data: orderDetails,
+                data: cartItems,
                 totalPrice: totalPrice,
                 customerInfo: {
                     fullName: savedDeliveryData.name || '',
