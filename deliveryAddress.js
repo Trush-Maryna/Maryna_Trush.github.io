@@ -27,4 +27,4 @@ document.addEventListener("DOMContentLoaded", function() {
         document.getElementById("name-input").value = savedDeliveryData.name;
         document.getElementById("phone-input").value = savedDeliveryData.phone;
     }
-});
+});   
