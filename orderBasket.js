@@ -65,19 +65,16 @@ document.addEventListener("DOMContentLoaded", function() {
     let pickupCheckbox = document.getElementById("pickup-checkbox");
     let deliveryCheckbox = document.getElementById("delivery-checkbox");
     let deliveryAddressButton = document.getElementById("deliveryAddress");
-    let mapElement = document.getElementById("map");
-    let payButton = document.getElementById("pay-button");
+    let mapContainer = document.getElementById("map");
 
     pickupCheckbox.addEventListener("change", function() {
         if (pickupCheckbox.checked) {
             deliveryAddressButton.style.display = "none";
             deliveryCheckbox.checked = false;
+            mapContainer.style.display = "block";
             showUkraineMap();
-            payButton.style.display = "block";
         } else {
-            deliveryAddressButton.style.display = "none";
-            hideUkraineMap();
-            payButton.style.display = "none";
+            mapContainer.style.display = "none";
         }
         updateMainButton();
     });
@@ -86,8 +83,8 @@ document.addEventListener("DOMContentLoaded", function() {
         if (deliveryCheckbox.checked) {
             deliveryAddressButton.style.display = "flex";
             pickupCheckbox.checked = false;
+            mapContainer.style.display = "none";
             hideUkraineMap();
-            payButton.style.display = "none";
         } else {
             deliveryAddressButton.style.display = "none";
         }
@@ -104,9 +101,9 @@ document.addEventListener("DOMContentLoaded", function() {
             let rowIndex = this.parentElement.parentElement.rowIndex;
             if (rowIndex>= 0 && rowIndex < cartItems.length) {
                 let deletedProduct = cartItems[rowIndex];
-                deletedProduct.quantity--; 
+                deletedProduct.quantity--;
                 if (deletedProduct.quantity === 0) {
-                    cartItems.splice(rowIndex, 1); 
+                    cartItems.splice(rowIndex, 1);
                 }
                 localStorage.setItem('cartItems', JSON.stringify(cartItems));
                 this.parentElement.parentElement.remove();
@@ -136,37 +133,45 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function showUkraineMap() {
-        mapElement.style.display = "block";
-        let map = new google.maps.Map(mapElement, {
-            center: {lat: 49.988358, lng: 36.232845},
-            zoom: 10
-        });
+        var map = L.map('map').setView([49.988358, 36.232845], 10);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
 
         let pharmacies = [
-            {name: "Аптека 'ZdoroviaNaDoloni' 1", lat: 50.043357, lng: 36.292218, info: "Аптека 'ZdoroviaNaDoloni'\n5,0 ⭐️⭐️⭐️⭐️⭐️ (50)\nОгляд\n✅ Покупки в аптеці\n✅ Можна замовити\nвул. Чкалова, 17, Харків, Харківська область, 61000\n🕒 Відчинено цілодобово\n📞 066 669 23 12"},
-            {name: "Аптека 'ZdoroviaNaDoloni' 2", lat: 49.982703, lng: 36.252893, info: "Аптека 'ZdoroviaNaDoloni'\n5,0 ⭐️⭐️⭐️⭐️⭐️ (50)\nОгляд\n✅ Покупки в аптеці\n✅ Можна замовити\nпровулок Аптекарський, 28, Харків, Харківська область, 61000\n🕒 Відчинено цілодобово\n📞 066 669 23 12"},
-            {name: "Аптека 'ZdoroviaNaDoloni' 3", lat: 50.001762, lng: 36.309428, info: "Аптека 'ZdoroviaNaDoloni'\n5,0 ⭐️⭐️⭐️⭐️⭐️ (50)\nОгляд\n✅ Покупки в аптеці\n✅ Можна замовити\nпроспект Ювілейний, 7а, Харків, Харківська область, 61000\n🕒 Відчинено цілодобово\n📞 066 669 23 12"}
+            {
+                name: "Аптека 'ZdoroviaNaDoloni' 1",
+                lat: 50.043357,
+                lng: 36.292218,
+                info: "Аптека 'ZdoroviaNaDoloni'<br>5,0 ⭐️⭐️⭐️⭐️⭐️ (50)<br>Огляд<br>✅ Покупки в аптеці<br>✅ Можна замовити<br>вул. Чкалова, 17, Харків, Харківська область, 61000<br>🕒 Відчинено цілодобово<br>📞 066 669 23 12"
+            },
+            {
+                name: "Аптека 'ZdoroviaNaDoloni' 2",
+                lat: 49.982703,
+                lng: 36.252893,
+                info: "Аптека 'ZdoroviaNaDoloni'<br>5,0 ⭐️⭐️⭐️⭐️⭐️ (50)<br>Огляд<br>✅ Покупки в аптеці<br>✅ Можна замовити<br>провулок Аптекарський, 28, Харків, Харківська область, 61000<br>🕒 Відчинено цілодобово<br>📞 066 669 23 12"
+            },
+            {
+                name: "Аптека 'ZdoroviaNaDoloni' 3",
+                lat: 50.001762,
+                lng: 36.309428,
+                info: "Аптека 'ZdoroviaNaDoloni'<br>5,0 ⭐️⭐️⭐️⭐️⭐️ (50)<br>Огляд<br>✅ Покупки в аптеці<br>✅ Можна замовити<br>проспект Ювілейний, 7а, Харків, Харківська область, 61000<br>🕒 Відчинено цілодобово<br>📞 066 669 23 12"
+            }
         ];
 
         pharmacies.forEach(function(pharmacy) {
-            let marker = new google.maps.Marker({
-                position: {lat: pharmacy.lat, lng: pharmacy.lng},
-                map: map,
-                title: pharmacy.name
-            });
+            var marker = L.marker([pharmacy.lat, pharmacy.lng]).addTo(map).bindPopup(pharmacy.info);
 
-            let infoWindow = new google.maps.InfoWindow({
-                content: `<h3>${pharmacy.name}</h3><p>${pharmacy.info}</p>`
-            });
-
-            marker.addListener("click", function() {
-                infoWindow.open(map, marker);
+            marker.on('click', function() {
+                Telegram.WebApp.onEvent('mainButtonClicked', function() {
+                Telegram.WebApp.sendData(pharmacy.info);
+                });
             });
         });
     }
 
     function hideUkraineMap() {
-        mapElement.style.display = "none";
+        mapContainer.innerHTML = "";
     }
 
     Telegram.WebApp.onEvent("mainButtonClicked", function() {

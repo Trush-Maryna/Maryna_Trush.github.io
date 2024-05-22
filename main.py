@@ -117,57 +117,21 @@ async def process_web_app_data(message: Message):
         response_message += f"Місто: {customer_info['city']}\n"
         response_message += f"Відділення НП: {customer_info['office']}\n"
         await bot.send_message(channel_id, response_message)
+    elif data['type'] == 'map_marker':
+        marker_info = data['marker_info']
+        await handle_map_marker(marker_info, message)
 
+async def handle_map_marker(marker_info, message):
+    pharmacy_name = marker_info['name']
+    ordered_items = marker_info['ordered_items']
+    pharmacy_info = marker_info['info']
 
-'''
-@dp.message_handler(content_types=[web_app_data])
-async def process_web_app_data(message: Message):
-    if message.web_app_data == "send_order_info":
-        order_data = json.loads(message.text)
-        print("Order data :", order_data)
-        await send_order_to_admin(order_data)
-        await send_order_to_user(message.from_user.id, order_data)
-    else:
-        pass
+    user_message = f"Ви забронювали товари: {', '.join(ordered_items)}.\nНа аптеку: {pharmacy_name}.\nІнформація про аптеку: {pharmacy_info}.\nДякуємо!"
+    await bot.send_message(message.from_user.id, user_message)
 
-async def send_order_to_admin(order_data):
-    order_description = ""
-    total_price = order_data['totalPrice']
+    channel_id = CHANNEL_ID
+    admin_message = f"На аптеку {pharmacy_name} заброньовано товари: {', '.join(ordered_items)}."
+    await bot.send_message(channel_id, admin_message)
 
-    for item in order_data['data']:
-        order_description += f"{item['name']}: {item['description']}, Кількість: {item['quantity']}\n"
-
-    print("Order data received by admin:", order_description)
-    print('Total price:', total_price)
-    await bot.send_message(ADMIN_ID, order_description)
-    await bot.send_message(ADMIN_ID, f'Загальна ціна: {total_price} грн')
-
-async def send_order_to_user(user_id, order_data):
-    order_description = ""
-    total_price = order_data['totalPrice']
-
-    for item in order_data['data']:
-        order_description += f"{item['name']}: {item['description']}, Кількість: {item['quantity']}\n"
-    print("Order data received by user:", order_description)
-    print('Total price:', total_price)
-    await bot.send_message(user_id, order_description)
-    await bot.send_message(user_id, f'Загальна ціна: {total_price} грн')
-
-
-@dp.message_handler(content_types=['web_app_data'])
-async def buy_process(web_app_message: Message):
-    total_price = web_app_message.web_app_data.totalPrice
-    await bot.send_invoice(web_app_message.chat.id, title='Замовлення', description='Ваше замовлення включає:', provider_token=PAYMENTS_TOKEN,
-                           currency='grn', need_email=True, need_phone_number=True, prices=total_price,
-                           start_parameter='order', payload='some_invoice')
-
-@dp.pre_checkout_query_handler(lambda q: True)
-async def checkout_process(pre_checkout_query: PreCheckoutQuery):
-    await bot.answer_pre_checkout_query(pre_checkout_query.id, ok=True)
-
-@dp.message_handler(content_types=ContentType.SUCCESSFUL_PAYMENT)
-async def successful_payment(message: Message):
-    await bot.send_message(message.chat.id, 'Платіж успішний')
-'''
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)
