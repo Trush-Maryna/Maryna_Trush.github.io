@@ -64,7 +64,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     updateDeliverySummary();
-    
+
     let pickupCheckbox = document.getElementById("pickup-checkbox");
     let deliveryCheckbox = document.getElementById("delivery-checkbox");
     let deliveryAddressButton = document.getElementById("deliveryAddress");
@@ -205,12 +205,12 @@ document.addEventListener("DOMContentLoaded", function() {
         if (pickupCheckbox.checked && selectedPharmacyInfo) {
             sendPharmacySelectionData(selectedPharmacyInfo);
         }
-        else{
+        else {
             let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
             let savedDeliveryData = JSON.parse(localStorage.getItem('deliveryData')) || {};
-            
+
             let orderDetails = [];
-            let totalPrice = 0;
+            totalPrice = 0;
             cartItems.forEach(function(product) {
                 let itemTotalPrice = product.price * product.quantity;
                 totalPrice += itemTotalPrice;
