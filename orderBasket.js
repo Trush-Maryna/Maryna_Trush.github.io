@@ -82,6 +82,7 @@ document.addEventListener("DOMContentLoaded", function() {
             tg.MainButton.show();
         } else {
             mapContainer.style.display = "none";
+            deliveryAddressButton.style.display = "none";
             tg.MainButton.setText("Оберіть доставку");
             tg.MainButton.show();
         }
@@ -93,8 +94,6 @@ document.addEventListener("DOMContentLoaded", function() {
             pickupCheckbox.checked = false;
             mapContainer.style.display = "none";
             hideUkraineMap();
-            tg.MainButton.setText("Введіть адресу");
-            tg.MainButton.show();
         } else {
             deliveryAddressButton.style.display = "none";
             tg.MainButton.setText("Оберіть доставку");
@@ -147,6 +146,34 @@ document.addEventListener("DOMContentLoaded", function() {
         tg.MainButton.show();
     }
 
+    function sendPharmacySelectionData(pharmacy) {
+        let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+
+        let orderDetails = [];
+        let totalPrice = 0;
+        cartItems.forEach(function(product) {
+            let itemTotalPrice = product.price * product.quantity;
+            totalPrice += itemTotalPrice;
+            orderDetails.push({
+                name: product.name,
+                quantity: product.quantity,
+                totalPrice: itemTotalPrice
+            });
+        });
+
+        let message = {
+            type: "pickup_order",
+            pharmacy: {
+                name: pharmacy.name,
+                info: pharmacy.info
+            },
+            data: orderDetails,
+            totalPrice: totalPrice
+        };
+
+        tg.sendData(JSON.stringify(message));
+    }
+
     function showUkraineMap() {
         var map = L.map('map').setView([49.988358, 36.232845], 10);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -178,8 +205,7 @@ document.addEventListener("DOMContentLoaded", function() {
             var marker = L.marker([pharmacy.lat, pharmacy.lng]).addTo(map).bindPopup(pharmacy.info);
 
             marker.on('click', function() {
-                selectedPharmacyInfo = pharmacy.info;  
-                console.log("Selected Pharmacy Info:", selectedPharmacyInfo);
+                selectedPharmacyInfo = pharmacy.info;
                 tg.MainButton.setText(`Забронювати з ${pharmacy.name}`);
                 tg.MainButton.show();
                 sendPharmacySelectionData(pharmacy);
@@ -189,31 +215,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
     function hideUkraineMap() {
         mapContainer.innerHTML = "";
-    }
-
-    function sendPharmacySelectionData(pharmacy) {
-        let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
-
-        let orderDetails = [];
-        let totalPrice = 0;
-        cartItems.forEach(function(product) {
-            let itemTotalPrice = product.price * product.quantity;
-            totalPrice += itemTotalPrice;
-            orderDetails.push({
-                name: product.name,
-                quantity: product.quantity,
-                totalPrice: itemTotalPrice
-            });
-        });
-
-        let message = {
-            type: "pickup_order",
-            pharmacy: pharmacy.name,
-            data: orderDetails,
-            totalPrice: totalPrice
-        };
-
-        tg.sendData(JSON.stringify(message));
     }
 
     tg.WebApp.onEvent("mainButtonClicked", function() {
