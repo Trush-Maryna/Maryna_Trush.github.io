@@ -177,11 +177,15 @@ document.addEventListener("DOMContentLoaded", function() {
         return pharmacies;
     }
 
+    let map = null;
+
     async function showUkraineMap() {
-        var map = L.map('map').setView([49.988358, 36.232845], 10);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
+        if (!map) {
+            map = L.map('map').setView([49.988358, 36.232845], 10);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+        }
 
         let pharmacies = await fetchPharmacies();
 
@@ -242,19 +246,6 @@ document.addEventListener("DOMContentLoaded", function() {
             tg.sendData(JSON.stringify(message));
         } else if (pickupCheckbox.checked && selectedPharmacyInfo) {
             sendPharmacySelectionData(selectedPharmacyInfo);
-        }
-    });
-
-    tg.MainButton.on('click', async function() {
-        if (deliveryCheckbox.checked) {
-            let orderData = gatherOrderDetails();
-            let message = {
-                type: "order_info",
-                data: orderData.orderDetails,
-                totalPrice: orderData.totalPrice,
-                customerInfo: orderData.customerInfo
-            };
-            tg.sendData(JSON.stringify(message));
         }
     });
 

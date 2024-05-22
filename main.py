@@ -131,23 +131,18 @@ async def handle_order_info(data, message):
 
 async def handle_pickup_order(data, message):
     try:
-        pharmacy_info = data['pharmacy']
+        pharmacy = data['pharmacy']
         order_details = data['data']
         total_price = data['totalPrice']
 
-        ordered_items = "\n".join([f"{item['name']} (кількість: {item['quantity']}, ціна: {item['totalPrice']} грн)" for item in order_details])
-
-        pharmacy_name = pharmacy_info['name']
-        pharmacy_details = pharmacy_info['info']
-
-        user_message = (f"Ви забронювали товари: \n{ordered_items}.\n\nЗагальна ціна: {total_price} грн.\n\nНа аптеку: {pharmacy_name}.\nІнформація про аптеку: \n{pharmacy_details}.\nДякуємо!")
-        await bot.send_message(message.from_user.id, user_message)
-
-        channel_id = CHANNEL_ID
-        admin_message = f"На аптеку {pharmacy_name} заброньовано товари: \n{ordered_items}.\n\nЗагальна ціна: {total_price} грн.\n\nДеталі аптеки: \n{pharmacy_details}."
-        await bot.send_message(channel_id, admin_message)
+        response_message = f"Бронювання з аптеки {pharmacy['name']}!\n"
+        response_message += f"Деталі аптеки: {pharmacy['info']}\n"
+        for item in order_details:
+            response_message += f"{item['name']}, кількість: {item['quantity']}, ціна: {item['totalPrice']} грн.\n"
+        response_message += f"Загальна ціна: {total_price} грн.\n"
+        await message.answer(response_message)
     except Exception as e:
-        await message.answer("Сталася помилка при обробці бронювання.")
+        await message.answer("Сталася помилка при обробці замовлення з аптеки.")
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     executor.start_polling(dp, skip_updates=True)
