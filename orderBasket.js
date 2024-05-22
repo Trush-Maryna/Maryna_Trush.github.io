@@ -1,9 +1,12 @@
+let tg = window.Telegram.WebApp;
+tg.MainButton.textColor = "#FFFFFF";
+tg.MainButton.color = "rgb(91,179,208)";
+tg.MainButton.fontSize = "17px";
+tg.expand();
+
 document.addEventListener("DOMContentLoaded", function() {
-    let tg = window.Telegram.WebApp;
-    tg.MainButton.textColor = "#FFFFFF";
-    tg.MainButton.color = "rgb(91,179,208)";
-    tg.MainButton.fontSize = "17px";
-    tg.expand();
+    tg.MainButton.setText("Оберіть доставку");
+    tg.MainButton.show();
 
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
         document.body.classList.remove('dark-theme');
@@ -70,15 +73,15 @@ document.addEventListener("DOMContentLoaded", function() {
 
     pickupCheckbox.addEventListener("change", function() {
         if (pickupCheckbox.checked) {
-            deliveryAddressButton.style.display = "none";
             deliveryCheckbox.checked = false;
             mapContainer.style.display = "block";
+            deliveryAddressButton.style.display = "none";
             showUkraineMap();
             tg.MainButton.setText("Оберіть аптеку");
             tg.MainButton.show();
         } else {
             mapContainer.style.display = "none";
-            deliveryAddressButton.style.display = "none";
+            hideUkraineMap();
             tg.MainButton.setText("Оберіть доставку");
             tg.MainButton.show();
         }
@@ -86,19 +89,38 @@ document.addEventListener("DOMContentLoaded", function() {
 
     deliveryCheckbox.addEventListener("change", function() {
         if (deliveryCheckbox.checked) {
-            deliveryAddressButton.style.display = "flex";
             pickupCheckbox.checked = false;
             mapContainer.style.display = "none";
             hideUkraineMap();
+            deliveryAddressButton.style.display = "flex";
+            tg.MainButton.setText(`Оплатити ${totalPrice} грн`);
+            tg.MainButton.show();
         } else {
             deliveryAddressButton.style.display = "none";
-            tg.MainButton.hide();
+            tg.MainButton.setText("Оберіть доставку");
+            tg.MainButton.show();
         }
-        updateMainButton();
     });
 
     deliveryAddressButton.addEventListener("click", function() {
         window.location.href = "deliveryAddress.html";
+    });
+
+    let deleteButtons = document.querySelectorAll(".delete-button");
+    deleteButtons.forEach(function(button) {
+        button.addEventListener("click", function() {
+            let rowIndex = this.parentElement.parentElement.rowIndex;
+            if (rowIndex >= 0 && rowIndex < cartItems.length) {
+                let deletedProduct = cartItems[rowIndex];
+                deletedProduct.quantity--;
+                if (deletedProduct.quantity === 0) {
+                    cartItems.splice(rowIndex, 1);
+                }
+                localStorage.setItem('cartItems', JSON.stringify(cartItems));
+                this.parentElement.parentElement.remove();
+                updateTotalPrice();
+            }
+        });
     });
 
     function updateTotalPrice() {
@@ -184,12 +206,12 @@ document.addEventListener("DOMContentLoaded", function() {
     tg.WebApp.onEvent("mainButtonClicked", function() {
         if (pickupCheckbox.checked && selectedPharmacyInfo) {
             sendPharmacySelectionData(selectedPharmacyInfo);
-        } else {
+        } else if (deliveryCheckbox.checked) {
             let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
             let savedDeliveryData = JSON.parse(localStorage.getItem('deliveryData')) || {};
 
             let orderDetails = [];
-            totalPrice = 0;
+            let totalPrice = 0;
             cartItems.forEach(function(product) {
                 let itemTotalPrice = product.price * product.quantity;
                 totalPrice += itemTotalPrice;
@@ -217,8 +239,3 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 });
-
-let usercard = document.getElementById("usercard");
-let p = document.createElement("p");
-p.innerText = `${tg.initDataUnsafe.user.first_name} ${tg.initDataUnsafe.user.last_name}`;
-usercard.appendChild(p);
