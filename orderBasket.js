@@ -1,12 +1,9 @@
-let tg = window.Telegram.WebApp;
-tg.MainButton.textColor = "#FFFFFF";
-tg.MainButton.color = "rgb(91,179,208)";
-tg.MainButton.fontSize = "17px";
-tg.expand();
-
 document.addEventListener("DOMContentLoaded", function() {
-    tg.MainButton.setText("Оберіть доставку");
-    tg.MainButton.show();
+    let tg = window.Telegram.WebApp;
+    tg.MainButton.textColor = "#FFFFFF";
+    tg.MainButton.color = "rgb(91,179,208)";
+    tg.MainButton.fontSize = "17px";
+    tg.expand();
 
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
         document.body.classList.remove('dark-theme');
@@ -104,23 +101,6 @@ document.addEventListener("DOMContentLoaded", function() {
         window.location.href = "deliveryAddress.html";
     });
 
-    let deleteButtons = document.querySelectorAll(".delete-button");
-    deleteButtons.forEach(function(button) {
-        button.addEventListener("click", function() {
-            let rowIndex = this.parentElement.parentElement.rowIndex;
-            if (rowIndex >= 0 && rowIndex < cartItems.length) {
-                let deletedProduct = cartItems[rowIndex];
-                deletedProduct.quantity--;
-                if (deletedProduct.quantity === 0) {
-                    cartItems.splice(rowIndex, 1);
-                }
-                localStorage.setItem('cartItems', JSON.stringify(cartItems));
-                this.parentElement.parentElement.remove();
-                updateTotalPrice();
-            }
-        });
-    });
-
     function updateTotalPrice() {
         totalPrice = 0;
         cartItems.forEach(function(product) {
@@ -201,11 +181,10 @@ document.addEventListener("DOMContentLoaded", function() {
         mapContainer.innerHTML = "";
     }
 
-    tg.WebApp.onEvent("mainButtonClicked", async function() {
+    tg.WebApp.onEvent("mainButtonClicked", function() {
         if (pickupCheckbox.checked && selectedPharmacyInfo) {
             sendPharmacySelectionData(selectedPharmacyInfo);
-        }
-        else {
+        } else {
             let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
             let savedDeliveryData = JSON.parse(localStorage.getItem('deliveryData')) || {};
 
@@ -220,8 +199,6 @@ document.addEventListener("DOMContentLoaded", function() {
                     totalPrice: itemTotalPrice
                 });
             });
-
-            let pharmacies = await fetchPharmacies();
 
             let message = {
                 type: "order_info",
@@ -240,3 +217,8 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 });
+
+let usercard = document.getElementById("usercard");
+let p = document.createElement("p");
+p.innerText = `${tg.initDataUnsafe.user.first_name} ${tg.initDataUnsafe.user.last_name}`;
+usercard.appendChild(p);
