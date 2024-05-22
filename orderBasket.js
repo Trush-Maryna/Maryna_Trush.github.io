@@ -178,8 +178,9 @@ document.addEventListener("DOMContentLoaded", function() {
             var marker = L.marker([pharmacy.lat, pharmacy.lng]).addTo(map).bindPopup(pharmacy.info);
 
             marker.on('click', function() {
-                selectedPharmacyInfo = pharmacy.info;
-                tg.MainButton.setText(`Забронювати з ${selectedPharmacyInfo}`);
+                selectedPharmacyInfo = pharmacy.info;  
+                console.log("Selected Pharmacy Info:", selectedPharmacyInfo);
+                tg.MainButton.setText(`Забронювати з ${pharmacy.name}`);
                 tg.MainButton.show();
                 sendPharmacySelectionData(pharmacy);
             });
@@ -207,7 +208,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         let message = {
             type: "pickup_order",
-            pharmacy: pharmacy,
+            pharmacy: pharmacy.name,
             data: orderDetails,
             totalPrice: totalPrice
         };
