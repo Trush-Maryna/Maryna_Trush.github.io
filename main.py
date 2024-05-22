@@ -88,61 +88,70 @@ async def process_heart_medicines(callback_query: CallbackQuery):
 
 @dp.message_handler(content_types=ContentType.WEB_APP_DATA)
 async def process_web_app_data(message: Message):
-    data = json.loads(message.web_app_data.data)
-    if data['type'] == 'order_info':
-        await handle_order_info(data, message)
-    elif data['type'] == 'pickup_order':
-        await handle_pickup_order(data, message)
+    try:
+        data = json.loads(message.web_app_data.data)
+        print(f"Received data: {data}")
+        if data['type'] == 'order_info':
+            await handle_order_info(data, message)
+        elif data['type'] == 'pickup_order':
+            await handle_pickup_order(data, message)
+    except Exception as e:
+        print(f"Error processing web app data: {e}")
+        await message.answer("Сталася помилка при обробці даних.")
 
 async def handle_order_info(data, message):
-    order_details = data['data']
-    total_price = data['totalPrice']
-    customer_info = data['customerInfo']
+    try:
+        order_details = data['data']
+        total_price = data['totalPrice']
+        customer_info = data['customerInfo']
 
-    response_message = f"Дякуємо {customer_info['fullName']}! \nЗамовлення прийнято\nОсь ваш чек:\n"
-    for item in order_details:
-        response_message += f"{item['name']}, кількість: {item['quantity']}, ціна: {item['totalPrice']} грн.\n"
-    response_message += f"Загальна ціна: {total_price} грн.\n"
-    response_message += f"Деталі доставки:\n"
-    response_message += f"Номер телефону: {customer_info['phoneNumber']}\n"
-    response_message += f"Область: {customer_info['region']}\n"
-    response_message += f"Місто: {customer_info['city']}\n"
-    response_message += f"Відділення НП: {customer_info['office']}\n"
-    await message.answer(response_message)
+        response_message = f"Дякуємо {customer_info['fullName']}! \nЗамовлення прийнято\nОсь ваш чек:\n"
+        for item in order_details:
+            response_message += f"{item['name']}, кількість: {item['quantity']}, ціна: {item['totalPrice']} грн.\n"
+        response_message += f"Загальна ціна: {total_price} грн.\n"
+        response_message += f"Деталі доставки:\n"
+        response_message += f"Номер телефону: {customer_info['phoneNumber']}\n"
+        response_message += f"Область: {customer_info['region']}\n"
+        response_message += f"Місто: {customer_info['city']}\n"
+        response_message += f"Відділення НП: {customer_info['office']}\n"
+        await message.answer(response_message)
 
-    channel_id = CHANNEL_ID
-    response_message = f"Нове замовлення від {customer_info['fullName']}!\n"
-    for item in order_details:
-        response_message += f"{item['name']}, кількість: {item['quantity']}, ціна: {item['totalPrice']} грн.\n"
-    response_message += f"Загальна ціна: {total_price} грн.\n"
-    response_message += f"Деталі доставки:\n"
-    response_message += f"ПІБ: {customer_info['fullName']}\n"
-    response_message += f"Номер телефону: {customer_info['phoneNumber']}\n"
-    response_message += f"Область: {customer_info['region']}\n"
-    response_message += f"Місто: {customer_info['city']}\n"
-    response_message += f"Відділення НП: {customer_info['office']}\n"
-    await bot.send_message(channel_id, response_message)
+        channel_id = CHANNEL_ID
+        response_message = f"Нове замовлення від {customer_info['fullName']}!\n"
+        for item in order_details:
+            response_message += f"{item['name']}, кількість: {item['quantity']}, ціна: {item['totalPrice']} грн.\n"
+        response_message += f"Загальна ціна: {total_price} грн.\n"
+        response_message += f"Деталі доставки:\n"
+        response_message += f"ПІБ: {customer_info['fullName']}\n"
+        response_message += f"Номер телефону: {customer_info['phoneNumber']}\n"
+        response_message += f"Область: {customer_info['region']}\n"
+        response_message += f"Місто: {customer_info['city']}\n"
+        response_message += f"Відділення НП: {customer_info['office']}\n"
+        await bot.send_message(channel_id, response_message)
+    except Exception as e:
+        print(f"Error handling order info: {e}")
+        await message.answer("Сталася помилка при обробці замовлення.")
 
 async def handle_pickup_order(data, message):
-    pharmacy_info = data['pharmacy']
-    order_details = data['data']
-    total_price = data['totalPrice']
+    try:
+        pharmacy_info = data['pharmacy']
+        order_details = data['data']
+        total_price = data['totalPrice']
 
-    ordered_names = [item['name'] for item in order_details]
-    ordered_quantity = [item['quantity'] for item in order_details]
-    ordered_price = [item['totalPrice'] for item in order_details]
+        ordered_items = "\n".join([f"{item['name']} (кількість: {item['quantity']}, ціна: {item['totalPrice']} грн)" for item in order_details])
 
-    pharmacy_name = pharmacy_info['name']
-    pharmacy_details = pharmacy_info['info']
+        pharmacy_name = pharmacy_info['name']
+        pharmacy_details = pharmacy_info['info']
 
-    user_message = (f"Ви забронювали товари: \n"
-                    f"{', '.join(ordered_names).join(ordered_quantity).join(ordered_price)}."
-                    f"\n\nЗагальна ціна: {total_price}грн.\n\nНа аптеку: {pharmacy_name}.\nІнформація про аптеку: \n{pharmacy_details}.\nДякуємо!")
-    await bot.send_message(message.from_user.id, user_message)
+        user_message = (f"Ви забронювали товари: \n{ordered_items}.\n\nЗагальна ціна: {total_price} грн.\n\nНа аптеку: {pharmacy_name}.\nІнформація про аптеку: \n{pharmacy_details}.\nДякуємо!")
+        await bot.send_message(message.from_user.id, user_message)
 
-    channel_id = CHANNEL_ID
-    admin_message = f"На аптеку {pharmacy_name} заброньовано товари: \n{', '.join(ordered_names).join(ordered_quantity).join(ordered_price)}.\n\nЗагальна ціна: {total_price}грн.\n\nДеталі аптеки: \n{pharmacy_details}."
-    await bot.send_message(channel_id, admin_message)
+        channel_id = CHANNEL_ID
+        admin_message = f"На аптеку {pharmacy_name} заброньовано товари: \n{ordered_items}.\n\nЗагальна ціна: {total_price} грн.\n\nДеталі аптеки: \n{pharmacy_details}."
+        await bot.send_message(channel_id, admin_message)
+    except Exception as e:
+        print(f"Error handling pickup order: {e}")
+        await message.answer("Сталася помилка при обробці бронювання.")
 
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)
