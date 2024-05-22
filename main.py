@@ -117,6 +117,7 @@ async def process_web_app_data(message: Message):
         response_message += f"Місто: {customer_info['city']}\n"
         response_message += f"Відділення НП: {customer_info['office']}\n"
         await bot.send_message(channel_id, response_message)
+
     elif data['type'] == 'map_marker':
         marker_info = data['marker_info']
         await handle_map_marker(marker_info, message)
