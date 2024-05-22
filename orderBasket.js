@@ -5,6 +5,9 @@ tg.MainButton.fontSize = "17px";
 tg.expand();
 
 document.addEventListener("DOMContentLoaded", function() {
+    tg.MainButton.setText("Оберіть доставку");
+    tg.MainButton.show();
+
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) {
         document.body.classList.remove('dark-theme');
         document.body.classList.add('light-theme');
@@ -75,10 +78,13 @@ document.addEventListener("DOMContentLoaded", function() {
             deliveryCheckbox.checked = false;
             mapContainer.style.display = "block";
             showUkraineMap();
+            tg.MainButton.setText("Оберіть аптеку");
+            tg.MainButton.show();
         } else {
             mapContainer.style.display = "none";
+            tg.MainButton.setText("Оберіть доставку");
+            tg.MainButton.show();
         }
-        updateMainButton();
     });
 
     deliveryCheckbox.addEventListener("change", function() {
@@ -87,10 +93,13 @@ document.addEventListener("DOMContentLoaded", function() {
             pickupCheckbox.checked = false;
             mapContainer.style.display = "none";
             hideUkraineMap();
+            tg.MainButton.setText("Введіть адресу");
+            tg.MainButton.show();
         } else {
             deliveryAddressButton.style.display = "none";
+            tg.MainButton.setText("Оберіть доставку");
+            tg.MainButton.show();
         }
-        updateMainButton();
     });
 
     deliveryAddressButton.addEventListener("click", function() {
@@ -101,11 +110,11 @@ document.addEventListener("DOMContentLoaded", function() {
     deleteButtons.forEach(function(button) {
         button.addEventListener("click", function() {
             let rowIndex = this.parentElement.parentElement.rowIndex;
-            if (rowIndex>= 0 && rowIndex < cartItems.length) {
+            if (rowIndex >= 0 && rowIndex < cartItems.length) {
                 let deletedProduct = cartItems[rowIndex];
-                deletedProduct.quantity--; 
+                deletedProduct.quantity--;
                 if (deletedProduct.quantity === 0) {
-                    cartItems.splice(rowIndex, 1); 
+                    cartItems.splice(rowIndex, 1);
                 }
                 localStorage.setItem('cartItems', JSON.stringify(cartItems));
                 this.parentElement.parentElement.remove();
@@ -124,14 +133,18 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function updateMainButton() {
-        if (pickupCheckbox.checked || deliveryCheckbox.checked) {
-            tg.MainButton.setText(`Оплатити ${totalPrice} грн`);
-            tg.MainButton.show();
-            updateTotalPrice();
+        if (pickupCheckbox.checked) {
+            if (selectedPharmacyInfo) {
+                tg.MainButton.setText(`Забронювати з ${selectedPharmacyInfo}`);
+            } else {
+                tg.MainButton.setText("Оберіть аптеку");
+            }
+        } else if (deliveryCheckbox.checked) {
+            tg.MainButton.setText("Оплатити ${totalPrice} грн");
         } else {
-            tg.MainButton.setText(`Оберіть доставку`);
-            tg.MainButton.show();
+            tg.MainButton.setText("Оберіть доставку");
         }
+        tg.MainButton.show();
     }
 
     function showUkraineMap() {
@@ -166,7 +179,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
             marker.on('click', function() {
                 selectedPharmacyInfo = pharmacy.info;
-                updateMainButton();
+                tg.MainButton.setText(`Забронювати з ${selectedPharmacyInfo}`);
+                tg.MainButton.show();
+                sendPharmacySelectionData(pharmacy);
             });
         });
     }
@@ -175,10 +190,9 @@ document.addEventListener("DOMContentLoaded", function() {
         mapContainer.innerHTML = "";
     }
 
-    Telegram.WebApp.onEvent("mainButtonClicked", function() {
+    function sendPharmacySelectionData(pharmacy) {
         let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
-        let savedDeliveryData = JSON.parse(localStorage.getItem('deliveryData')) || {};
-                
+
         let orderDetails = [];
         let totalPrice = 0;
         cartItems.forEach(function(product) {
@@ -192,34 +206,47 @@ document.addEventListener("DOMContentLoaded", function() {
         });
 
         let message = {
-            type: "order_info",
+            type: "pickup_order",
+            pharmacy: pharmacy,
             data: orderDetails,
-            totalPrice: totalPrice,
-            customerInfo: {
-                fullName: savedDeliveryData.name || '',
-                phoneNumber: savedDeliveryData.phone || '',
-                region: savedDeliveryData.region || '',
-                city: savedDeliveryData.city || '',
-                office: savedDeliveryData.office || ''
-            }
+            totalPrice: totalPrice
         };
-                
+
         tg.sendData(JSON.stringify(message));
-    });
+    }
 
-    function updateMainButton() {
-        if (selectedPharmacyInfo) {
-            tg.MainButton.setText(`Замовити з ${selectedPharmacyInfo}`);
-            tg.MainButton.show();
+    tg.WebApp.onEvent("mainButtonClicked", function() {
+        if (pickupCheckbox.checked && selectedPharmacyInfo) {
+            sendPharmacySelectionData(selectedPharmacyInfo);
         } else {
-            tg.MainButton.setText(`Оберіть аптеку`);
-            tg.MainButton.show();
-        }
-    }            
-});
+            let savedDeliveryData = JSON.parse(localStorage.getItem('deliveryData')) || {};
 
-let usercard = document.getElementById("usercard");
-let p = document.createElement("p");
-p.innerText = `${tg.initDataUnsafe.user.first_name}
-${tg.initDataUnsafe.user.last_name}`;
-usercard.appendChild(p);
+            let orderDetails = [];
+            let totalPrice = 0;
+            cartItems.forEach(function(product) {
+                let itemTotalPrice = product.price * product.quantity;
+                totalPrice += itemTotalPrice;
+                orderDetails.push({
+                    name: product.name,
+                    quantity: product.quantity,
+                    totalPrice: itemTotalPrice
+                });
+            });
+
+            let message = {
+                type: "order_info",
+                data: orderDetails,
+                totalPrice: totalPrice,
+                customerInfo: {
+                    fullName: savedDeliveryData.name || '',
+                    phoneNumber: savedDeliveryData.phone || '',
+                    region: savedDeliveryData.region || '',
+                    city: savedDeliveryData.city || '',
+                    office: savedDeliveryData.office || ''
+                }
+            };
+
+            tg.sendData(JSON.stringify(message));
+        }
+    });
+});

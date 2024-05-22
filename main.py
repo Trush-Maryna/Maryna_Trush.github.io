@@ -90,48 +90,53 @@ async def process_heart_medicines(callback_query: CallbackQuery):
 async def process_web_app_data(message: Message):
     data = json.loads(message.web_app_data.data)
     if data['type'] == 'order_info':
-        order_details = data['data']
-        total_price = data['totalPrice']
-        customer_info = data['customerInfo']
+        await handle_order_info(data, message)
+    elif data['type'] == 'pickup_order':
+        await handle_pickup_order(data, message)
 
-        response_message = f"Дякуємо {customer_info['fullName']}! \nЗамовлення прийнято\nОсь ваш чек:\n"
-        for item in order_details:
-            response_message += f"{item['name']}, кількість: {item['quantity']}, ціна: {item['totalPrice']} грн.\n"
-        response_message += f"Загальна ціна: {total_price} грн.\n"
-        response_message += f"Деталі доставки:\n"
-        response_message += f"Номер телефону: {customer_info['phoneNumber']}\n"
-        response_message += f"Область: {customer_info['region']}\n"
-        response_message += f"Місто: {customer_info['city']}\n"
-        response_message += f"Відділення НП: {customer_info['office']}\n"
-        await message.answer(response_message)
+async def handle_order_info(data, message):
+    order_details = data['data']
+    total_price = data['totalPrice']
+    customer_info = data['customerInfo']
 
-        channel_id = CHANNEL_ID
-        response_message = f"Нове замовлення від {customer_info['fullName']}!\n"
-        for item in order_details:
-            response_message += f"{item['name']}, кількість: {item['quantity']}, ціна: {item['totalPrice']} грн.\n"
-        response_message += f"Загальна ціна: {total_price} грн.\n"
-        response_message += f"Деталі доставки:\n"
-        response_message += f"ПІБ: {customer_info['fullName']}\n"
-        response_message += f"Номер телефону: {customer_info['phoneNumber']}\n"
-        response_message += f"Область: {customer_info['region']}\n"
-        response_message += f"Місто: {customer_info['city']}\n"
-        response_message += f"Відділення НП: {customer_info['office']}\n"
-        await bot.send_message(channel_id, response_message)
+    response_message = f"Дякуємо {customer_info['fullName']}! \nЗамовлення прийнято\nОсь ваш чек:\n"
+    for item in order_details:
+        response_message += f"{item['name']}, кількість: {item['quantity']}, ціна: {item['totalPrice']} грн.\n"
+    response_message += f"Загальна ціна: {total_price} грн.\n"
+    response_message += f"Деталі доставки:\n"
+    response_message += f"Номер телефону: {customer_info['phoneNumber']}\n"
+    response_message += f"Область: {customer_info['region']}\n"
+    response_message += f"Місто: {customer_info['city']}\n"
+    response_message += f"Відділення НП: {customer_info['office']}\n"
+    await message.answer(response_message)
 
-    elif data['type'] == 'map_marker':
-        marker_info = data['marker_info']
-        await handle_map_marker(marker_info, message)
+    channel_id = CHANNEL_ID
+    response_message = f"Нове замовлення від {customer_info['fullName']}!\n"
+    for item in order_details:
+        response_message += f"{item['name']}, кількість: {item['quantity']}, ціна: {item['totalPrice']} грн.\n"
+    response_message += f"Загальна ціна: {total_price} грн.\n"
+    response_message += f"Деталі доставки:\n"
+    response_message += f"ПІБ: {customer_info['fullName']}\n"
+    response_message += f"Номер телефону: {customer_info['phoneNumber']}\n"
+    response_message += f"Область: {customer_info['region']}\n"
+    response_message += f"Місто: {customer_info['city']}\n"
+    response_message += f"Відділення НП: {customer_info['office']}\n"
+    await bot.send_message(channel_id, response_message)
 
-async def handle_map_marker(marker_info, message):
-    pharmacy_name = marker_info['name']
-    ordered_items = marker_info['ordered_items']
-    pharmacy_info = marker_info['info']
+async def handle_pickup_order(data, message):
+    pharmacy_info = data['pharmacy']
+    order_details = data['data']
+    total_price = data['totalPrice']
 
-    user_message = f"Ви забронювали товари: {', '.join(ordered_items)}.\nНа аптеку: {pharmacy_name}.\nІнформація про аптеку: {pharmacy_info}.\nДякуємо!"
+    ordered_items = [item['name'] for item in order_details]
+    pharmacy_name = pharmacy_info['name']
+    pharmacy_details = pharmacy_info['info']
+
+    user_message = f"Ви забронювали товари: {', '.join(ordered_items)}.\nНа аптеку: {pharmacy_name}.\nІнформація про аптеку: {pharmacy_details}.\nДякуємо!"
     await bot.send_message(message.from_user.id, user_message)
 
     channel_id = CHANNEL_ID
-    admin_message = f"На аптеку {pharmacy_name} заброньовано товари: {', '.join(ordered_items)}."
+    admin_message = f"На аптеку {pharmacy_name} заброньовано товари: {', '.join(ordered_items)}.\nДеталі аптеки: {pharmacy_details}."
     await bot.send_message(channel_id, admin_message)
 
 if __name__ == '__main__':
