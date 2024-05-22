@@ -201,7 +201,7 @@ document.addEventListener("DOMContentLoaded", function() {
         mapContainer.innerHTML = "";
     }
 
-    tg.WebApp.onEvent("mainButtonClicked", function() {
+    tg.WebApp.onEvent("mainButtonClicked", async function() {
         if (pickupCheckbox.checked && selectedPharmacyInfo) {
             sendPharmacySelectionData(selectedPharmacyInfo);
         }
@@ -220,6 +220,8 @@ document.addEventListener("DOMContentLoaded", function() {
                     totalPrice: itemTotalPrice
                 });
             });
+
+            let pharmacies = await fetchPharmacies();
 
             let message = {
                 type: "order_info",
