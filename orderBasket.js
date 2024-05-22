@@ -19,7 +19,6 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     let totalPrice = 0;
-
     let basketTable = document.getElementById("basket-table");
     let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
     cartItems.forEach(function(product) {
