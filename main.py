@@ -132,11 +132,11 @@ async def handle_pickup_order(data, message):
     pharmacy_name = pharmacy_info['name']
     pharmacy_details = pharmacy_info['info']
 
-    user_message = f"Ви забронювали товари: {', '.join(ordered_items)}.\nЗагальна ціна: {total_price}грн.\nНа аптеку: {pharmacy_name}.\nІнформація про аптеку: {pharmacy_details}.\nДякуємо!"
+    user_message = f"Ви забронювали товари: \n{', '.join(ordered_items)}.\nЗагальна ціна: {total_price}грн.\nНа аптеку: {pharmacy_name}.\nІнформація про аптеку: \n{pharmacy_details}.\nДякуємо!"
     await bot.send_message(message.from_user.id, user_message)
 
     channel_id = CHANNEL_ID
-    admin_message = f"На аптеку {pharmacy_name} заброньовано товари: {', '.join(ordered_items)}.\nЗагальна ціна: {total_price}грн.\nДеталі аптеки: {pharmacy_details}."
+    admin_message = f"На аптеку {pharmacy_name} заброньовано товари: \n{', '.join(ordered_items)}.\nЗагальна ціна: {total_price}грн.\nДеталі аптеки: \n{pharmacy_details}."
     await bot.send_message(channel_id, admin_message)
 
 if __name__ == '__main__':

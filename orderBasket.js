@@ -140,8 +140,6 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         } else if (deliveryCheckbox.checked) {
             tg.MainButton.setText("Оплатити ${totalPrice} грн");
-        } else {
-            tg.MainButton.setText("Оберіть доставку");
         }
         tg.MainButton.show();
     }
@@ -164,8 +162,8 @@ document.addEventListener("DOMContentLoaded", function() {
         let message = {
             type: "pickup_order",
             pharmacy: {
-                name: pharmacy.name,
-                info: pharmacy.info
+                name: pharmacy.Name,
+                info: pharmacy.Information
             },
             data: orderDetails,
             totalPrice: totalPrice
@@ -174,39 +172,26 @@ document.addEventListener("DOMContentLoaded", function() {
         tg.sendData(JSON.stringify(message));
     }
 
-    function showUkraineMap() {
+    async function fetchPharmacies() {
+        const response = await fetch('https://trush-maryna.github.io/Maryna_Trush.github.io/pharmacies.json');
+        const pharmacies = await response.json();
+        return pharmacies;
+    }
+
+    async function showUkraineMap() {
         var map = L.map('map').setView([49.988358, 36.232845], 10);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
 
-        let pharmacies = [
-            {
-                name: "Аптека 'ZdoroviaNaDoloni' 1",
-                lat: 50.043357,
-                lng: 36.292218,
-                info: "Аптека 'ZdoroviaNaDoloni'<br>5,0 ⭐️⭐️⭐️⭐️⭐️ (50)<br>Огляд<br>✅ Покупки в аптеці<br>✅ Можна замовити<br>вул. Чкалова, 17, Харків, Харківська область, 61000<br>🕒 Відчинено цілодобово<br>📞 066 669 23 12"
-            },
-            {
-                name: "Аптека 'ZdoroviaNaDoloni' 2",
-                lat: 49.982703,
-                lng: 36.252893,
-                info: "Аптека 'ZdoroviaNaDoloni'<br>5,0 ⭐️⭐️⭐️⭐️⭐️ (50)<br>Огляд<br>✅ Покупки в аптеці<br>✅ Можна замовити<br>провулок Аптекарський, 28, Харків, Харківська область, 61000<br>🕒 Відчинено цілодобово<br>📞 066 669 23 12"
-            },
-            {
-                name: "Аптека 'ZdoroviaNaDoloni' 3",
-                lat: 50.001762,
-                lng: 36.309428,
-                info: "Аптека 'ZdoroviaNaDoloni'<br>5,0 ⭐️⭐️⭐️⭐️⭐️ (50)<br>Огляд<br>✅ Покупки в аптеці<br>✅ Можна замовити<br>проспект Ювілейний, 7а, Харків, Харківська область, 61000<br>🕒 Відчинено цілодобово<br>📞 066 669 23 12"
-            }
-        ];
+        let pharmacies = await fetchPharmacies();
 
         pharmacies.forEach(function(pharmacy) {
-            var marker = L.marker([pharmacy.lat, pharmacy.lng]).addTo(map).bindPopup(pharmacy.info);
-
+            var marker = L.marker([pharmacy.Latitude, pharmacy.Longitude]).addTo(map).bindPopup(pharmacy.Information);
+        
             marker.on('click', function() {
-                selectedPharmacyInfo = pharmacy.info;
-                tg.MainButton.setText(`Забронювати з ${pharmacy.name}`);
+                selectedPharmacyInfo = pharmacy.Information;
+                tg.MainButton.setText(`Забронювати з ${pharmacy.Name}`);
                 tg.MainButton.show();
                 sendPharmacySelectionData(pharmacy);
             });
