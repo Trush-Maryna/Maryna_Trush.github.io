@@ -135,12 +135,19 @@ async def handle_pickup_order(data, message):
         order_details = data['data']
         total_price = data['totalPrice']
 
-        response_message = f"Бронювання з аптеки {pharmacy['name']}!\n"
-        response_message += f"Деталі аптеки: {pharmacy['info']}\n"
+        response_message = f"Бронювання у аптеці {pharmacy['name']} прийнято!\n"
         for item in order_details:
-            response_message += f"{item['name']}, кількість: {item['quantity']}, ціна: {item['totalPrice']} грн.\n"
-        response_message += f"Загальна ціна: {total_price} грн.\n"
+            response_message += f"Товари:\n{item['name']}, кількість: {item['quantity']}, ціна: {item['totalPrice']} грн.\n"
+        response_message += f"\nЗагальна ціна: {total_price} грн.\n"
+        response_message += f"Деталі аптеки: \n{pharmacy['info']}\n"
         await message.answer(response_message)
+
+        channel_id = CHANNEL_ID
+        response_message = f"Нове бронювання у аптеці {pharmacy['name']}!\n"
+        for item in order_details:
+            response_message += f"Товари:\n{item['name']}, кількість: {item['quantity']}, ціна: {item['totalPrice']} грн.\n"
+        response_message += f"\nЗагальна ціна: {total_price} грн.\n"
+        await bot.send_message(channel_id, response_message)
     except Exception as e:
         await message.answer("Сталася помилка при обробці замовлення з аптеки.")
 
