@@ -6,19 +6,11 @@ tg.expand();
 
 document.addEventListener("DOMContentLoaded", function() {
     const pickupCheckbox = document.getElementById('pickup-checkbox');
-    const deliveryCheckbox = document.getElementById('delivery-checkbox');
-    const telegramMainButton = Telegram.WebApp.MainButton;
-    telegramMainButton.setText("Оберіть доставку");
-
+    let deliveryCheckbox = document.getElementById("delivery-checkbox");
     pickupCheckbox.addEventListener('change', function() {
         if (pickupCheckbox.checked) {
             window.location.href = 'orderBasketpickup.html';
-        }
-    });
-
-    deliveryCheckbox.addEventListener('change', function() {
-        if (deliveryCheckbox.checked) {
-            window.location.href = 'orderBasketdelivery.html';
+            deliveryCheckbox.style.backgroundColor = "steelblue";
         }
     });
 
@@ -80,6 +72,31 @@ document.addEventListener("DOMContentLoaded", function() {
 
     updateDeliverySummary();
 
+    let deliveryAddressButton = document.getElementById("deliveryAddress");
+    deliveryAddressButton.style.display = "flex";
+    updateMainButton();
+
+    deliveryAddressButton.addEventListener("click", function() {
+        window.location.href = "deliveryAddress.html";
+    });
+
+    let deleteButtons = document.querySelectorAll(".delete-button");
+    deleteButtons.forEach(function(button) {
+        button.addEventListener("click", function() {
+            let rowIndex = this.parentElement.parentElement.rowIndex;
+            if (rowIndex>= 0 && rowIndex < cartItems.length) {
+                let deletedProduct = cartItems[rowIndex];
+                deletedProduct.quantity--; 
+                if (deletedProduct.quantity === 0) {
+                    cartItems.splice(rowIndex, 1); 
+                }
+                localStorage.setItem('cartItems', JSON.stringify(cartItems));
+                this.parentElement.parentElement.remove();
+                updateTotalPrice();
+            }
+        });
+    });
+
     function updateTotalPrice() {
         totalPrice = 0;
         cartItems.forEach(function(product) {
@@ -88,6 +105,46 @@ document.addEventListener("DOMContentLoaded", function() {
         updateMainButton();
         updateDeliverySummary();
     }
+
+    function updateMainButton() {
+        if (deliveryCheckbox.checked) {
+            tg.MainButton.setText(`Оплатити ${totalPrice} грн`);
+            tg.MainButton.show();
+            updateTotalPrice();
+        }
+    }
+
+    Telegram.WebApp.onEvent("mainButtonClicked", function() {
+        let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+        let savedDeliveryData = JSON.parse(localStorage.getItem('deliveryData')) || {};
+        
+        let orderDetails = [];
+        let totalPrice = 0;
+        cartItems.forEach(function(product) {
+            let itemTotalPrice = product.price * product.quantity;
+            totalPrice += itemTotalPrice;
+            orderDetails.push({
+                name: product.name,
+                quantity: product.quantity,
+                totalPrice: itemTotalPrice
+            });
+        });
+
+        let message = {
+            type: "order_info",
+            data: orderDetails,
+            totalPrice: totalPrice,
+            customerInfo: {
+                fullName: savedDeliveryData.name || '',
+                phoneNumber: savedDeliveryData.phone || '',
+                region: savedDeliveryData.region || '',
+                city: savedDeliveryData.city || '',
+                office: savedDeliveryData.office || ''
+            }
+        };
+        
+        tg.sendData(JSON.stringify(message));
+    });
 });
 
 let usercard = document.getElementById("usercard");
