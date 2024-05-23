@@ -98,17 +98,7 @@ document.addEventListener("DOMContentLoaded", function() {
         cartItems.forEach(function(product) {
             totalPrice += product.price * product.quantity;
         });
-        updateMainButton();
         updateDeliverySummary();
-    }
-
-    async function updateMainButton() {
-        if (pickupCheckbox.checked) {
-            if (selectedPharmacyInfo) {
-                tg.MainButton.setText(`Забронювати з ${selectedPharmacyInfo}`);
-            }
-        }
-        tg.MainButton.show();
     }
 
     function sendPharmacySelectionData(pharmacy) {
@@ -163,8 +153,6 @@ document.addEventListener("DOMContentLoaded", function() {
         
             marker.on('click', function() {
                 selectedPharmacyInfo = pharmacy.Information;
-                tg.MainButton.setText(`Забронювати з ${pharmacy.Name}`);
-                tg.MainButton.show();
                 sendPharmacySelectionData(pharmacy);
             });
         });

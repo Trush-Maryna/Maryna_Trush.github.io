@@ -74,7 +74,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
     let deliveryAddressButton = document.getElementById("deliveryAddress");
     deliveryAddressButton.style.display = "flex";
-    updateMainButton();
+    tg.MainButton.setText(`Оплатити ${totalPrice} грн`);
+    tg.MainButton.show();
+    updateTotalPrice();
 
     deliveryAddressButton.addEventListener("click", function() {
         window.location.href = "deliveryAddress.html";
@@ -102,16 +104,7 @@ document.addEventListener("DOMContentLoaded", function() {
         cartItems.forEach(function(product) {
             totalPrice += product.price * product.quantity;
         });
-        updateMainButton();
         updateDeliverySummary();
-    }
-
-    function updateMainButton() {
-        if (deliveryCheckbox.checked) {
-            tg.MainButton.setText(`Оплатити ${totalPrice} грн`);
-            tg.MainButton.show();
-            updateTotalPrice();
-        }
     }
 
     Telegram.WebApp.onEvent("mainButtonClicked", function() {
