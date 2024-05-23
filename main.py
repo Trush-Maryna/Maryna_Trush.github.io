@@ -135,15 +135,15 @@ async def handle_pickup_order(data, message):
         order_details = data['data']
         total_price = data['totalPrice']
 
-        response_message = f"Бронювання у аптеці {pharmacy['name']} прийнято!\nТовари:\n"
+        response_message = f"Бронювання у аптеці {pharmacy['name']} прийнято!\n\nТовари:\n"
         for item in order_details:
             response_message += f"{item['name']}, кількість: {item['quantity']}, ціна: {item['totalPrice']} грн.\n"
-        response_message += f"\nЗагальна ціна: {total_price} грн.\n"
-        response_message += f"Деталі аптеки: \n{pharmacy['info']}\n"
+        response_message += f"Загальна ціна: {total_price} грн.\n"
+        response_message += f"\nДеталі аптеки: \n{pharmacy['info']}\n"
         await message.answer(response_message)
 
         channel_id = CHANNEL_ID
-        response_message = f"Нове бронювання у аптеці {pharmacy['name']}!\nТовари:\n"
+        response_message = f"Нове бронювання у аптеці {pharmacy['name']}!\n\nТовари:\n"
         for item in order_details:
             response_message += f"{item['name']}, кількість: {item['quantity']}, ціна: {item['totalPrice']} грн.\n"
         response_message += f"\nЗагальна ціна: {total_price} грн.\n"
